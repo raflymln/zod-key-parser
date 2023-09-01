@@ -96,8 +96,8 @@ So that you can use it on your Prisma ORM like this
 
 ```ts
 const something = await prisma.table.findUnique({
-	where: ...,
-    select: schema.prismaKeys
+  where: ...,
+  select: schema.prismaKeys
 })
 ```
 
@@ -174,11 +174,11 @@ Use it to format data from form action directly, **especially for React/Next.js 
 
 ```tsx
 const formAction = (formData: FormData) => {
-	const parsed = schema.safeParse(formatFormData(formData));
+  const parsed = schema.safeParse(formatFormData(formData));
 
-    if (!parsed.success) {
-    	...
-    }
+  if (!parsed.success) {
+    ...
+  }
 }
 
 return (
