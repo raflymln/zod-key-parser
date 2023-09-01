@@ -48,7 +48,7 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
     return parsed;
 };
 
-export const formatFormData = (formData: FormData): FormattedFormData => {
+export const formatFormData = (formData: FormData) => {
     const data: Record<string, FormDataEntryValue> = Object.fromEntries(formData);
     return formatObject(data);
 };
