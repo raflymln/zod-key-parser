@@ -8,7 +8,17 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [],
+    "keywords": [
+        "zod",
+        "prisma",
+        "form",
+        "schema",
+        "parser",
+        "typescript",
+        "server-action",
+        "nextjs",
+        "react"
+    ],
     "prettier": "@raflymln/prettier-config",
     "eslintConfig": {
         "extends": "@raflymln/eslint-config",
@@ -21,7 +31,7 @@
         "name": "Rafly Maulana",
         "url": "https://raflymaulana.me"
     },
-    "license": "ISC",
+    "license": "MIT",
     "devDependencies": {
         "@raflymln/eslint-config": "^1.2.1",
         "@raflymln/prettier-config": "^1.0.0",
