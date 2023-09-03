@@ -4,18 +4,16 @@
         "outDir": "dist",
         "target": "ESNext",
         "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
-        "skipLibCheck": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "module": "CommonJS",
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
         "declaration": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "downlevelIteration": true,
-        "incremental": true
+        "pretty": true
     },
     "include": ["**/*.ts"],
     "exclude": ["node_modules", "dist"]
