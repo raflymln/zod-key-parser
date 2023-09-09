@@ -35,10 +35,10 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
         if (typeof value === "string") {
             if (value === "") {
                 delete current[lastPart];
-            } else if (!isNaN(Date.parse(value))) {
-                current[lastPart] = new Date(value);
             } else if (!isNaN(Number(value))) {
                 current[lastPart] = Number(value);
+            } else if (!isNaN(Date.parse(value))) {
+                current[lastPart] = new Date(value);
             } else if (value === "true" || value === "false") {
                 current[lastPart] = value === "true";
             }
