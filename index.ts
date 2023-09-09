@@ -154,13 +154,13 @@ export const convertZodKeysToPrismaSelect = (prismaKeys: ZodSchemaKeys = {}) => 
 };
 
 type ZodSchemaParsed<T extends ZodTypeAny> = {
-    keys: ParsedFormKeys<UnionToIntersection<TypeOf<T>>>;
-    prismaKeys: ParsedPrismaKeys<UnionToIntersection<TypeOf<T>>>;
+    keys: ParsedFormKeys<Required<UnionToIntersection<TypeOf<T>>>>;
+    prismaKeys: ParsedPrismaKeys<Required<UnionToIntersection<TypeOf<T>>>>;
     model: T;
 };
 
 export const parseZodSchema = <T extends ZodTypeAny>(model: T): ZodSchemaParsed<T> => {
-    type TypeOfT = UnionToIntersection<TypeOf<T>>;
+    type TypeOfT = Required<UnionToIntersection<TypeOf<T>>>;
 
     return {
         keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfT>,
