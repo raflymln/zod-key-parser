@@ -12,7 +12,8 @@
         "build:esm": "tsc -p ./tsconfig.build-esm.json",
         "build:types": "tsc -p ./tsconfig.build-types.json",
         "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepublishOnly": "pnpm build"
     },
     "keywords": [
         "zod",
