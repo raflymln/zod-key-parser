@@ -1,6 +1,6 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
-import { ZodObject, ZodIntersection, ZodUnion, ZodArray, ZodOptional, ZodNullable } from "zod";
+import { ZodObject, ZodIntersection, ZodUnion, ZodArray, ZodOptional, ZodNullable, z } from "zod";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -65,7 +65,11 @@ export type ZodSchemaKeys =
                 };
       };
 
-export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevKey?: string): ZodSchemaKeys => {
+export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevKey?: string, zod?: typeof z): ZodSchemaKeys => {
+    if (typeof window !== "undefined") {
+        console.log(model.constructor.name, z === zod, zod?.ZodObject === ZodObject);
+    }
+
     if (model instanceof ZodObject || model.constructor.name === "ZodObject") {
         const objKeys: ZodSchemaKeys = {};
 
