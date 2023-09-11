@@ -1,6 +1,7 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
-import { ZodObject, ZodIntersection, ZodUnion, ZodArray, ZodOptional, ZodNullable, z } from "zod";
+// eslint-disable-next-line import/no-namespace
+import * as zod from "zod";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -65,16 +66,16 @@ export type ZodSchemaKeys =
                 };
       };
 
-export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevKey?: string, zod?: typeof z): ZodSchemaKeys => {
+export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevKey?: string, zod_1?: typeof zod.z): ZodSchemaKeys => {
     if (typeof window !== "undefined") {
-        console.log(model.constructor.name, z === zod, zod?.ZodObject === ZodObject);
+        console.log(model.constructor.name, zod.z === zod_1, zod.ZodObject === zod_1?.ZodObject);
     }
 
-    if (model instanceof ZodObject || model.constructor.name === "ZodObject") {
+    if (model instanceof zod.ZodObject || model.constructor.name === "ZodObject") {
         const objKeys: ZodSchemaKeys = {};
 
         Object.entries((model as AnyZodObject).shape).map(([key, schema]) => {
-            if (schema instanceof ZodArray && !isPrisma) {
+            if (schema instanceof zod.ZodArray && !isPrisma) {
                 const arrayKey = (index: number) => getKeysFromZodSchema(schema as ZodTypeAny, isPrisma, prevKey ? `${prevKey}.${key}.${index}` : `${key}.${index}`) as ZodSchemaKeys;
                 arrayKey.key = prevKey ? `${prevKey}.${key}` : key;
 
@@ -85,8 +86,8 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
         });
 
         return objKeys;
-    } else if (model instanceof ZodUnion || model.constructor.name === "ZodUnion") {
-        return (model as ZodUnion<[ZodTypeAny]>).options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
+    } else if (model instanceof zod.ZodUnion || model.constructor.name === "ZodUnion") {
+        return (model as zod.ZodUnion<[ZodTypeAny]>).options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
             const result = getKeysFromZodSchema(curr, isPrisma, prevKey);
 
             return {
@@ -94,7 +95,7 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
                 ...(typeof result === "object" ? result : {}), //
             };
         }, {});
-    } else if (model instanceof ZodIntersection || model.constructor.name === "ZodIntersection") {
+    } else if (model instanceof zod.ZodIntersection || model.constructor.name === "ZodIntersection") {
         const left = getKeysFromZodSchema(model._def.left, isPrisma, prevKey);
         const right = getKeysFromZodSchema(model._def.right, isPrisma, prevKey);
 
@@ -102,10 +103,10 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
             ...(typeof left === "object" ? left : {}),
             ...(typeof right === "object" ? right : {}),
         };
-    } else if (model instanceof ZodArray || model.constructor.name === "ZodArray") {
-        return getKeysFromZodSchema((model as ZodArray<ZodTypeAny>).element, isPrisma, prevKey);
-    } else if (model instanceof ZodOptional || model.constructor.name === "ZodOptional" || model instanceof ZodNullable || model.constructor.name === "ZodNullable") {
-        return getKeysFromZodSchema((model as ZodOptional<ZodTypeAny>).unwrap(), isPrisma, prevKey);
+    } else if (model instanceof zod.ZodArray || model.constructor.name === "ZodArray") {
+        return getKeysFromZodSchema((model as zod.ZodArray<ZodTypeAny>).element, isPrisma, prevKey);
+    } else if (model instanceof zod.ZodOptional || model.constructor.name === "ZodOptional" || model instanceof zod.ZodNullable || model.constructor.name === "ZodNullable") {
+        return getKeysFromZodSchema((model as zod.ZodOptional<ZodTypeAny>).unwrap(), isPrisma, prevKey);
     }
 
     if (prevKey) {
