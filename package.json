@@ -1,6 +1,6 @@
 {
     "name": "zod-key-parser",
-    "version": "1.1.5-experimental.4",
+    "version": "1.1.5-experimental.5",
     "description": "Parse zod schema into form keys or prisma select format",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
