@@ -1,19 +1,11 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
-        "outDir": "dist",
         "target": "ESNext",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true,
-        "module": "CommonJS",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "moduleResolution": "Node",
-        "declaration": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "downlevelIteration": true,
-        "pretty": true
+        "strict": true,
+        "declaration": false,
+        "esModuleInterop": true
     },
     "include": ["**/*.ts"],
     "exclude": ["node_modules", "dist"]
