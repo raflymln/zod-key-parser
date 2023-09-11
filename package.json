@@ -25,6 +25,9 @@
         "nextjs",
         "react"
     ],
+    "files": [
+        "dist"
+    ],
     "prettier": "@raflymln/prettier-config",
     "eslintConfig": {
         "extends": "@raflymln/eslint-config",
