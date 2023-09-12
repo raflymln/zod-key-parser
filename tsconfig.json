@@ -5,7 +5,9 @@
         "moduleResolution": "Node",
         "strict": true,
         "declaration": false,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "removeComments": true,
+        "sourceMap": true
     },
     "include": ["./src/**/*.ts"],
     "exclude": ["node_modules", "dist"]

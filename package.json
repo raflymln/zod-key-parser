@@ -7,14 +7,6 @@
     "types": "./dist/types/index.d.ts",
     "homepage": "https://github.com/raflymln/zod-key-parser#readme",
     "repository": "https://github.com/raflymln/zod-key-parser",
-    "scripts": {
-        "build:cjs": "tsc -p ./tsconfig.build-cjs.json",
-        "build:esm": "tsc -p ./tsconfig.build-esm.json",
-        "build:types": "tsc -p ./tsconfig.build-types.json",
-        "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "prepublishOnly": "pnpm build"
-    },
     "keywords": [
         "zod",
         "prisma",
@@ -26,6 +18,14 @@
         "nextjs",
         "react"
     ],
+    "scripts": {
+        "build:cjs": "tsc -p ./tsconfig.cjs.json",
+        "build:esm": "tsc -p ./tsconfig.esm.json",
+        "build:types": "tsc -p ./tsconfig.types.json",
+        "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
+        "prepublishOnly": "pnpm build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
     "files": [
         "dist"
     ],
