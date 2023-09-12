@@ -1,3 +1,9 @@
+> ### ⚠ Please use latest version
+>
+> All bugs related to peer dependency, fail to parsing, and other bugs has been fixed in latest version
+>
+> **If you still have any problem, please make an issue in the GitHub repository**
+
 # Zod Key Parser
 
 Parse your Zod schema into keys or Prisma ORM select format
@@ -205,7 +211,7 @@ return (
 ## What You Should Know
 
 -   Currently it doesn't support non object schema, if your schema is just like `z.string()` it wont parse anything since it doesn't have a key
--   It **Supports** ZodUnion, ZodIntersection, ZodArray, and ZodObject, also of course the basic type like string, boolean and so on, i don't know if there are any Zod class that i should be aware of since i myself doesn't use anything beside what I've specify before.
+-   It **Supports** ZodUnion, ZodIntersection, ZodArray, ZodOptional, ZodNullable, and ZodObject also of course the basic type like string, boolean and so on, i don't know if there are any Zod class that i should be aware of since i myself doesn't use anything beside what I've specify before.
 
 ## Any Suggestion or Problem?
 
