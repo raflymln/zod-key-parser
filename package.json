@@ -2,9 +2,6 @@
     "name": "zod-key-parser",
     "version": "1.1.5-experimental.5",
     "description": "Parse zod schema into form keys or prisma select format",
-    "main": "./dist/cjs/index.js",
-    "module": "./dist/esm/index.js",
-    "types": "./dist/types/index.d.ts",
     "homepage": "https://github.com/raflymln/zod-key-parser#readme",
     "repository": "https://github.com/raflymln/zod-key-parser",
     "keywords": [
@@ -25,6 +22,14 @@
         "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
         "prepublishOnly": "pnpm build",
         "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "exports": {
+        "./*": {
+            "types": "./dist/types/*.d.ts",
+            "require": "./dist/cjs/*.js",
+            "import": "./dist/esm/*.js",
+            "default": "./dist/esm/*.js"
+        }
     },
     "files": [
         "dist"
