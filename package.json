@@ -26,14 +26,6 @@
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/types/index.d.ts",
-    "exports": {
-        "./*": {
-            "types": "./dist/types/*.d.ts",
-            "require": "./dist/cjs/*.js",
-            "import": "./dist/esm/*.js",
-            "default": "./dist/esm/*.js"
-        }
-    },
     "files": [
         "dist"
     ],
