@@ -114,7 +114,7 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
 // Map key => key
 export type ParsedFormKeys<Type> = Required<{
     [K in keyof Type]: Type[K] extends object //
-        ? Type[K] extends Date
+        ? Type[K] extends Date | File
             ? K
             : ParsedFormKeys<Type[K]> extends object[]
             ? {
@@ -128,7 +128,7 @@ export type ParsedFormKeys<Type> = Required<{
 // Map key => { select: key } | true
 export type ParsedPrismaKeys<Type> = Required<{
     [K in keyof Type]: Type[K] extends object //
-        ? Type[K] extends Date
+        ? Type[K] extends Date | File
             ? true
             : Record<
                   "select",
