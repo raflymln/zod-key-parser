@@ -11,7 +11,16 @@ export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) exte
 
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
-export type FormattedFormData = number | boolean | FormDataEntryValue | Date | FormattedFormData[] | { [key: string]: FormattedFormData };
+export type FormattedFormData =
+    | number
+    | boolean
+    | FormDataEntryValue
+    | File[]
+    | Date
+    | FormattedFormData[]
+    | {
+          [key: string]: FormattedFormData;
+      };
 
 export const formatObject = (data: Record<string, FormattedFormData>) => {
     const parsed: Record<string, FormattedFormData> = {};
@@ -54,7 +63,24 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
 };
 
 export const formatFormData = (formData: FormData) => {
-    const data: Record<string, FormDataEntryValue> = Object.fromEntries(formData);
+    const data: Record<string, FormDataEntryValue | File[]> = {};
+
+    for (const key of formData.keys()) {
+        const value = formData.get(key);
+
+        if (typeof value === "string") {
+            data[key] = value;
+        } else if (value instanceof File) {
+            const files = formData.getAll(key) as File[];
+
+            if (files.length === 1) {
+                data[key] = files[0];
+            } else {
+                data[key] = files;
+            }
+        }
+    }
+
     return formatObject(data);
 };
 
