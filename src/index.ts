@@ -1,6 +1,11 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
+import { File as FilePolyfill } from "@web-std/file";
 import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
+
+if (!globalThis.File) {
+    globalThis.File = FilePolyfill;
+}
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
