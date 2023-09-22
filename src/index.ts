@@ -1,11 +1,6 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
-import { File as FilePolyfill } from "@web-std/file";
 import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
-
-if (!globalThis.File) {
-    globalThis.File = FilePolyfill;
-}
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -70,7 +65,7 @@ export const formatFormData = (formData: FormData) => {
 
         if (typeof value === "string") {
             data[key] = value;
-        } else if (value instanceof File) {
+        } else {
             const files = formData.getAll(key) as File[];
 
             if (files.length === 1) {
