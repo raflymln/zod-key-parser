@@ -3,6 +3,13 @@
 > All bugs related to peer dependency, fail to parsing, and other bugs has been fixed in latest version
 >
 > **If you still have any problem, please make an issue in the GitHub repository**
+>
+> ---
+>
+> #### What's New on v.1.3.0?
+>
+> -   Improved Types, make type exactly as the result
+> -   Add handler for multiple file input
 
 # Zod Key Parser
 
