@@ -21,7 +21,7 @@
         "build:types": "tsc -p ./tsconfig.types.json",
         "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
         "prepublishOnly": "pnpm build",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "ts-node src/index.test.ts"
     },
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
