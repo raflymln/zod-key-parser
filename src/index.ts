@@ -117,31 +117,56 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
     return {};
 };
 
+export type CreateKeyWithPrevKey<PrevKey extends string, Key> = PrevKey extends "" ? Key : `${PrevKey}${Key extends string ? `.${Key}` : ""}`;
+
 // Map key => key
-export type ParsedFormKeys<Type> = Required<{
-    [K in keyof Type]: Type[K] extends object //
-        ? Type[K] extends Date | File
-            ? K
-            : ParsedFormKeys<Type[K]> extends object[]
-            ? {
-                  (index: number): ParsedFormKeys<Type[K]>[0];
-                  key: K;
-              }
-            : ParsedFormKeys<Type[K]>
-        : K;
+// prettier-ignore
+export type ParsedFormKeys<Type, PrevKey extends string = ""> = Required<{
+    [K in keyof Type]: 
+        // If key was an object, or an array
+        Type[K] extends object
+        
+            // Exclude Date and File
+            ? Type[K] extends Date | File
+                ? K
+            
+            // If key was an array
+            : Type[K] extends object[]
+                ? {
+                    <Index extends number>(index: Index): ParsedFormKeys<Type[K], K extends string ? `${K}.${Index}` : "">[0];
+                    key: K;
+                }
+                
+            // If key was a basic object (key => value)
+            : ParsedFormKeys<Type[K], CreateKeyWithPrevKey<PrevKey, K>>
+            
+        // If key was a primitive (string, number, boolean)
+        : CreateKeyWithPrevKey<PrevKey, K>;
 }>;
 
 // Map key => { select: key } | true
+// prettier-ignore
 export type ParsedPrismaKeys<Type> = Required<{
-    [K in keyof Type]: Type[K] extends object //
-        ? Type[K] extends Date | File
-            ? true
+    [K in keyof Type]: 
+        // If key was an object, or an array
+        Type[K] extends object
+        
+            // Exclude Date and File
+            ? Type[K] extends Date | File
+                ? true
+                
+            // If key was other object or array
             : Record<
-                  "select",
-                  ParsedPrismaKeys<Type[K]> extends object[] //
-                      ? ParsedPrismaKeys<ArrayElement<Type[K]>>
-                      : ParsedPrismaKeys<Type[K]>
-              >
+                "select",
+                ParsedPrismaKeys<Type[K]> extends object[]
+                    // If key was an array, get the first element
+                    ? ParsedPrismaKeys<ArrayElement<Type[K]>>
+                    
+                    // If key was an object
+                    : ParsedPrismaKeys<Type[K]>
+            >
+            
+        // If key was a primitive (string, number, boolean)
         : true;
 }>;
 
