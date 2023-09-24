@@ -4,6 +4,10 @@ import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnio
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
+export type NestedUnionToIntersection<T> = {
+    [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K];
+};
+
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
 export type FormattedFormData =
@@ -218,13 +222,13 @@ export const convertZodKeysToPrismaSelect = (prismaKeys: ZodSchemaKeys = {}) => 
 };
 
 type ZodSchemaParsed<T extends ZodTypeAny> = {
-    keys: ParsedFormKeys<Required<UnionToIntersection<TypeOf<T>>>>;
-    prismaKeys: ParsedPrismaKeys<Required<UnionToIntersection<TypeOf<T>>>>;
+    keys: ParsedFormKeys<Required<NestedUnionToIntersection<TypeOf<T>>>>;
+    prismaKeys: ParsedPrismaKeys<Required<NestedUnionToIntersection<TypeOf<T>>>>;
     model: T;
 };
 
 export const parseZodSchema = <T extends ZodTypeAny>(model: T): ZodSchemaParsed<T> => {
-    type TypeOfT = Required<UnionToIntersection<TypeOf<T>>>;
+    type TypeOfT = Required<NestedUnionToIntersection<TypeOf<T>>>;
 
     return {
         keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfT>,
