@@ -4,9 +4,9 @@ import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnio
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
-export type NestedUnionToIntersection<T> = {
+export type NestedUnionToIntersection<T> = UnionToIntersection<{
     [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K];
-};
+}>;
 
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
