@@ -100,7 +100,7 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
 
         return objKeys;
     } else if (model instanceof ZodUnion || model.constructor.name === "ZodUnion" || Array.isArray((model as ZodUnion<[AnyZodObject]>).options)) {
-        return (model as ZodUnion<[AnyZodObject]>).options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
+        const result = (model as ZodUnion<[AnyZodObject]>).options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
             const result = getKeysFromZodSchema(curr, isPrisma, prevKey);
 
             return {
@@ -108,6 +108,10 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
                 ...(typeof result === "object" ? result : {}), //
             };
         }, {});
+
+        if (Object.keys(result).length > 0) {
+            return result;
+        }
     } else if (model instanceof ZodIntersection || model.constructor.name === "ZodIntersection" || (!!model._def.left && !!model._def.right)) {
         const left = getKeysFromZodSchema(model._def.left, isPrisma, prevKey);
         const right = getKeysFromZodSchema(model._def.right, isPrisma, prevKey);
