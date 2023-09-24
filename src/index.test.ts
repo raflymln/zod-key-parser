@@ -77,47 +77,106 @@ const testObject = () => {
 
 const testZodSchemaParser = () => {
     const schema = z.object({
-        a: z.boolean(),
-        b: z.string(),
-        h: z.array(
+        key1: z.boolean(),
+        key2: z.string().nullable(),
+        array: z.array(
             z.object({
-                ha: z.number(),
-                hb: z.string(),
-                hc: z.boolean(),
-                hd: z.string(),
+                key1: z.number(),
+                key2: z.string(),
+                key3: z.boolean(),
+                key4: z.string(),
             })
         ),
-        i: z.object({
-            ia: z.number(),
-        }),
+        object: z
+            .object({
+                ia: z.number(),
+            })
+            .optional(),
+        union: z.union([z.string(), z.number()]),
+        unionObject: z.union([
+            z.object({
+                a: z.string(),
+            }),
+            z.object({
+                b: z.number(),
+            }),
+        ]),
+        intersection: z.intersection(
+            z.object({
+                a: z.string(),
+            }),
+            z.object({
+                b: z.number(),
+            })
+        ),
     });
 
     console.log("> Begin test to parse Zod Schema");
     const result = parseZodSchema(schema);
 
+    // #region Keys
     console.log("- Testing Keys");
     console.log(result.keys);
 
-    if (result.keys.a !== "a" || result.keys.b !== "b") {
+    if (result.keys.key1 !== "key1" || result.keys.key2 !== "key2") {
         throw new Error("Failed to parse keys");
     }
 
-    if (typeof result.keys.h !== "function" || result.keys.h.key !== "h") {
+    if (typeof result.keys.array !== "function" || result.keys.array.key !== "array") {
         throw new Error("Failed to parse keys on array");
     }
 
-    const arrValue = result.keys.h(0);
-
-    if (arrValue.ha !== "h.0.ha") {
+    if (result.keys.array(0).key1 !== "array.0.key1") {
         throw new Error("Failed to parse keys on array value");
     }
 
-    if (typeof result.keys.i !== "object" || result.keys.i.ia !== "i.ia") {
+    if (typeof result.keys.object !== "object" || result.keys.object.ia !== "object.ia") {
         throw new Error("Failed to parse keys on object");
     }
 
+    if (result.keys.union !== "union") {
+        throw new Error("Failed to parse keys on union");
+    }
+
+    if (result.keys.unionObject.a !== "unionObject.a" || result.keys.unionObject.b !== "unionObject.b") {
+        throw new Error("Failed to parse keys on union object");
+    }
+
+    if (result.keys.intersection.a !== "intersection.a" || result.keys.intersection.b !== "intersection.b") {
+        throw new Error("Failed to parse keys on intersection");
+    }
+
+    // #endregion
+
+    // #region Prisma Keys
     console.log("- Testing Prisma Keys");
     console.log(result.prismaKeys);
+
+    if (result.prismaKeys.key1 !== true || result.prismaKeys.key2 !== true) {
+        throw new Error("Failed to parse prisma keys");
+    }
+
+    if (!result.prismaKeys.array.select || result.prismaKeys.array.select.key1 !== true) {
+        throw new Error("Failed to parse prisma keys on array");
+    }
+
+    if (!result.prismaKeys.object.select || result.prismaKeys.object.select.ia !== true) {
+        throw new Error("Failed to parse prisma keys on object");
+    }
+
+    if (result.prismaKeys.union !== true) {
+        throw new Error("Failed to parse prisma keys on union");
+    }
+
+    if (!result.prismaKeys.unionObject.select || result.prismaKeys.unionObject.select.a !== true) {
+        throw new Error("Failed to parse prisma keys on union object");
+    }
+
+    if (!result.prismaKeys.intersection.select || result.prismaKeys.intersection.select.a !== true) {
+        throw new Error("Failed to parse prisma keys on intersection");
+    }
+
+    // #endregion
 
     console.log("> End test to parse Zod Schema");
 };
