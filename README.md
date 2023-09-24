@@ -6,10 +6,13 @@
 >
 > ---
 >
-> #### What's New on v.1.3.0?
+> #### What's New on v.1.4.0?
 >
 > -   Improved Types, make type exactly as the result
 > -   Add handler for multiple file input
+> -   For Zod Union, if both left and right was not an object, it will treat itself as primitive value instead of an object, in the keys, it'll return the key instead of empty object
+> -   Make all keys as intersection for Keys and PrismaKeys return type
+> -   Add checking by its model props, in case if no peer dependency found (Next.js v13.5 issue)
 
 # Zod Key Parser
 
