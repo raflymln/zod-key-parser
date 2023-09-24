@@ -45,13 +45,13 @@
     "devDependencies": {
         "@raflymln/eslint-config": "^1.2.1",
         "@raflymln/prettier-config": "^1.0.0",
-        "@types/node": "^20.6.3",
-        "eslint": "^8.49.0",
+        "@types/node": "^20.6.4",
+        "@web-std/file": "^3.0.3",
+        "eslint": "^8.50.0",
         "prettier": "^3.0.3",
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@web-std/file": "^3.0.3",
         "zod": "^3.22.2"
     },
     "peerDependencies": {
