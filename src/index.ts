@@ -28,6 +28,25 @@ export const parseString = (str: string) => {
     return str;
 };
 
+export type DataFormatterOptions = {
+    /**
+     * If the returned value is undefined, the value then will be parsed using the default parser.
+     * But if the returned value is anything else, the value will be set to the returned value.
+     */
+    customStringParser?: (value: string) => FormattedFormData | undefined;
+
+    /**
+     * If true, empty strings will be kept as empty strings.
+     * This not includes empty strings in arrays.
+     */
+    keepEmptyString?: boolean;
+
+    /**
+     * If true, empty strings in arrays will be kept as empty strings.
+     */
+    keepEmptyStringInArray?: boolean;
+};
+
 export type FormattedFormData =
     | number
     | boolean
@@ -40,7 +59,7 @@ export type FormattedFormData =
           [key: string]: FormattedFormData;
       };
 
-export const formatObject = (data: Record<string, FormattedFormData>) => {
+export const formatObject = (data: Record<string, FormattedFormData>, options?: DataFormatterOptions) => {
     const parsed: Record<string, FormattedFormData> = {};
 
     for (const key in data) {
@@ -65,16 +84,35 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
         const value = (current[lastPart] = data[key]);
 
         if (typeof value === "string") {
-            if (value === "") {
+            if (options?.customStringParser) {
+                const customParsed = options.customStringParser(value);
+
+                if (customParsed !== undefined) {
+                    current[lastPart] = customParsed;
+                    continue;
+                }
+            }
+
+            if (value === "" && !options?.keepEmptyString) {
                 delete current[lastPart];
             } else {
                 current[lastPart] = parseString(value);
             }
         } else if (Array.isArray(value)) {
-            const filtered = value.filter((v) => v !== "");
+            const filtered = options?.keepEmptyStringInArray ? value : value.filter((v) => v !== "");
 
             for (const [index, v] of filtered.entries()) {
                 if (typeof v !== "string") continue;
+
+                if (options?.customStringParser) {
+                    const customParsed = options.customStringParser(v);
+
+                    if (customParsed !== undefined) {
+                        filtered[index] = customParsed;
+                        continue;
+                    }
+                }
+
                 filtered[index] = parseString(v);
             }
 
@@ -85,7 +123,7 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
     return parsed;
 };
 
-export const formatFormData = (formData: FormData) => {
+export const formatFormData = (formData: FormData, options?: DataFormatterOptions) => {
     const data: Record<string, FormattedFormData> = {};
 
     for (const key of formData.keys()) {
@@ -98,7 +136,7 @@ export const formatFormData = (formData: FormData) => {
         }
     }
 
-    return formatObject(data);
+    return formatObject(data, options);
 };
 
 export type ZodSchemaKeys =
