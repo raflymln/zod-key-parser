@@ -1,11 +1,10 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
-import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
-
-import isNumeric from "validator/lib/isNumeric";
 import isDate from "validator/lib/isDate";
-import toDate from "validator/lib/toDate";
 import isMobilePhone from "validator/lib/isMobilePhone";
+import isNumeric from "validator/lib/isNumeric";
+import toDate from "validator/lib/toDate";
+import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
