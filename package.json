@@ -21,7 +21,7 @@
         "build:types": "tsc -p ./tsconfig.types.json",
         "build": "pnpm test && pnpm build:cjs && pnpm build:esm && pnpm build:types",
         "prepublishOnly": "pnpm build",
-        "test": "ts-node src/index.test.ts"
+        "test": "mocha --reporter spec --require ts-node/register src/**/*.test.ts "
     },
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
