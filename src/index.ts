@@ -2,6 +2,11 @@ import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
 import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
 
+import isNumeric from "validator/lib/isNumeric";
+import isDate from "validator/lib/isDate";
+import toDate from "validator/lib/toDate";
+import isMobilePhone from "validator/lib/isMobilePhone";
+
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
 export type NestedUnionToIntersection<T> = UnionToIntersection<{
@@ -48,10 +53,10 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
         if (typeof value === "string") {
             if (value === "") {
                 delete current[lastPart];
-            } else if (!isNaN(Number(value))) {
+            } else if (isNumeric(value) && !isMobilePhone(value)) {
                 current[lastPart] = Number(value);
-            } else if (!isNaN(Date.parse(value))) {
-                current[lastPart] = new Date(value);
+            } else if (isDate(value)) {
+                current[lastPart] = toDate(value)!;
             } else if (value === "true" || value === "false") {
                 current[lastPart] = value === "true";
             }

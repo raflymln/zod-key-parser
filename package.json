@@ -46,6 +46,7 @@
         "@raflymln/eslint-config": "^1.2.1",
         "@raflymln/prettier-config": "^1.0.0",
         "@types/node": "^20.8.7",
+        "@types/validator": "^13.11.5",
         "@web-std/file": "^3.0.3",
         "eslint": "^8.51.0",
         "prettier": "^3.0.3",
