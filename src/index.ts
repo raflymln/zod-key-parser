@@ -1,8 +1,10 @@
 import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
 
+import isBoolean from "validator/lib/isBoolean";
 import isDate from "validator/lib/isDate";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import isNumeric from "validator/lib/isNumeric";
+import toBoolean from "validator/lib/toBoolean";
 import toDate from "validator/lib/toDate";
 import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
 
@@ -14,10 +16,23 @@ export type NestedUnionToIntersection<T> = UnionToIntersection<{
 
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
+export const parseString = (str: string) => {
+    if (isNumeric(str) && !isMobilePhone(str)) {
+        return Number(str);
+    } else if (isDate(str)) {
+        return toDate(str)!;
+    } else if (isBoolean(str)) {
+        return toBoolean(str);
+    }
+
+    return str;
+};
+
 export type FormattedFormData =
     | number
     | boolean
     | FormDataEntryValue
+    | string[]
     | File[]
     | Date
     | FormattedFormData[]
@@ -52,13 +67,18 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
         if (typeof value === "string") {
             if (value === "") {
                 delete current[lastPart];
-            } else if (isNumeric(value) && !isMobilePhone(value)) {
-                current[lastPart] = Number(value);
-            } else if (isDate(value)) {
-                current[lastPart] = toDate(value)!;
-            } else if (value === "true" || value === "false") {
-                current[lastPart] = value === "true";
+            } else {
+                current[lastPart] = parseString(value);
             }
+        } else if (Array.isArray(value)) {
+            const filtered = value.filter((v) => v !== "");
+
+            for (const [index, v] of filtered.entries()) {
+                if (typeof v !== "string") continue;
+                filtered[index] = parseString(v);
+            }
+
+            current[lastPart] = filtered;
         }
     }
 
@@ -66,21 +86,15 @@ export const formatObject = (data: Record<string, FormattedFormData>) => {
 };
 
 export const formatFormData = (formData: FormData) => {
-    const data: Record<string, FormDataEntryValue | File[]> = {};
+    const data: Record<string, FormattedFormData> = {};
 
     for (const key of formData.keys()) {
-        const value = formData.get(key);
+        const files = formData.getAll(key) as File[] | string[];
 
-        if (typeof value === "string") {
-            data[key] = value;
+        if (files.length === 1) {
+            data[key] = files[0];
         } else {
-            const files = formData.getAll(key) as File[];
-
-            if (files.length === 1) {
-                data[key] = files[0];
-            } else {
-                data[key] = files;
-            }
+            data[key] = files;
         }
     }
 
