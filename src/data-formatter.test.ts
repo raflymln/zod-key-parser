@@ -131,11 +131,11 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
     const objectResult = formatObject(inputTestObject, formatterOptions) as ResultTestObject;
     const formDataResult = formatFormData(formData, formatterOptions) as ResultTestObject;
 
-    it("[-1] Both `formatObject` and `formatFormData` should return the same result", () => {
+    it("Both `formatObject` and `formatFormData` should return the same result", () => {
         assert.deepStrictEqual(objectResult, formDataResult);
     });
 
-    it("[0] The value of this should be the same as the input (string)", () => {
+    it("The value of this should be the same as the input (string)", () => {
         assert.strictEqual(formDataResult.uuid, inputTestObject.uuid);
         assert.strictEqual(formDataResult.name, inputTestObject.name);
 
@@ -147,12 +147,12 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
         assert.strictEqual(formDataResult.status.longUrl, inputTestObject["status.longUrl"]);
     });
 
-    it("[1] The value of this should be a boolean version of the input (boolean)", () => {
+    it("The value of this should be a boolean version of the input (boolean)", () => {
         assert.strictEqual(formDataResult.isWorking, false);
         assert.strictEqual(formDataResult.status.isAlive, true);
     });
 
-    it("[2] The value of this should be a Date version of the input (Date)", () => {
+    it("The value of this should be a Date version of the input (Date)", () => {
         assert.strictEqual(formDataResult.dateOfBirth instanceof Date, true);
         assert.strictEqual(formDataResult.dateOfBirth.toISOString(), new Date(inputTestObject.dateOfBirth).toISOString());
 
@@ -160,36 +160,36 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
         assert.strictEqual(formDataResult.gmt7Date.toISOString(), new Date(inputTestObject.gmt7Date).toISOString());
     });
 
-    it("[3] The value of this should be a number version of the input (number)", () => {
+    it("The value of this should be a number version of the input (number)", () => {
         assert.strictEqual(formDataResult.smallNumber, Number(inputTestObject.smallNumber));
         assert.strictEqual(formDataResult.mediumNumber, Number(inputTestObject.mediumNumber));
         assert.strictEqual(formDataResult.largeNumber, Number(inputTestObject.largeNumber));
         assert.strictEqual(formDataResult.float, Number(inputTestObject.float));
     });
 
-    it("[4] `tags` should return an array of string without the empty one", () => {
+    it("`tags` should return an array of string without the empty one", () => {
         assert.equal(Array.isArray(formDataResult.tags), true);
         assert.equal(formDataResult.tags.length, 3);
         assert.strictEqual(formDataResult.tags[0], "a");
     });
 
-    it("[5] `tagIds` should return an array of number without the empty one", () => {
+    it("`tagIds` should return an array of number without the empty one", () => {
         assert.equal(Array.isArray(formDataResult.tagIds), true);
         assert.equal(formDataResult.tagIds.length, 3);
         assert.strictEqual(formDataResult.tagIds[0], 1);
     });
 
-    it("[6] `image.photo` should return an array of files", () => {
+    it("`image.photo` should return an array of files", () => {
         assert.equal(Array.isArray(formDataResult.image.photo), true);
         assert.equal(formDataResult.image.photo.length, 3);
         assert.strictEqual(formDataResult.image.photo[0] instanceof File, true);
     });
 
-    it("[7] `image.profilePicture` should return a single file", () => {
+    it("`image.profilePicture` should return a single file", () => {
         assert.equal(formDataResult.image.profilePicture instanceof File, true);
     });
 
-    it("[8] `deepNested should work as expected", () => {
+    it("`deepNested should work as expected", () => {
         assert.equal(formDataResult.deepNested.children.anotherChildren.name, inputTestObject["deepNested.children.anotherChildren.name"]);
         assert.strictEqual(formDataResult.deepNested.children.anotherChildren.age, Number(inputTestObject["deepNested.children.anotherChildren.age"]));
         assert.strictEqual(formDataResult.deepNested.children.anotherChildren.file instanceof File, true);
