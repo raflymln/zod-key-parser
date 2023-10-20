@@ -79,6 +79,7 @@ const testZodSchemaParser = () => {
     const schema = z.object({
         key1: z.boolean(),
         key2: z.string().nullable(),
+        key3: z.enum(["a", "b", "c"]),
         array: z.array(
             z.object({
                 key1: z.number(),

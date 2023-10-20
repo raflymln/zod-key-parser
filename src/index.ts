@@ -116,7 +116,7 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isPrisma: boolean, prevK
         if (Object.keys(result).length > 0) {
             return result;
         }
-    } else if (model instanceof ZodIntersection || model.constructor.name === "ZodIntersection" || (!!model._def.left && !!model._def.right)) {
+    } else if (model instanceof ZodIntersection || model.constructor.name === "ZodIntersection" || (!!model._def?.left && !!model._def?.right)) {
         const left = getKeysFromZodSchema(model._def.left, isPrisma, prevKey);
         const right = getKeysFromZodSchema(model._def.right, isPrisma, prevKey);
 
