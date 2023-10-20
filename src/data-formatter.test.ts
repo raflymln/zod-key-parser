@@ -108,8 +108,6 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
         }
     }
 
-    console.log("Input Test Object", inputTestObject);
-
     const formatterOptions: DataFormatterOptions = {
         customStringParser: (value: string) => {
             // Cannot parse localized phone number
