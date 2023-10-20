@@ -1,6 +1,6 @@
-import type { AnyZodObject, TypeOf, ZodTypeAny } from "zod";
+import type { TypeOf, ZodTypeAny } from "zod";
 
-import { ZodArray, ZodIntersection, ZodNullable, ZodObject, ZodOptional, ZodUnion } from "zod";
+import { isZodArray, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodUnion } from ".";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type NestedUnionToIntersection<T> = UnionToIntersection<{ [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K] }>;
@@ -105,16 +105,16 @@ export type ZodSchemaKeys =
       };
 
 export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, parentKey?: string): ZodSchemaKeys => {
-    if (model instanceof ZodObject || model.constructor.name === "ZodObject" || !!(model as AnyZodObject).shape) {
+    if (isZodObject(model)) {
         const objKeys: ZodSchemaKeys = {};
 
-        Object.entries((model as AnyZodObject).shape).map(([key, schema]) => {
+        Object.entries(model.shape).map(([key, schema]) => {
             objKeys[key] = getKeysFromZodSchema(schema as ZodTypeAny, isForPrisma, parentKey ? `${parentKey}.${key}` : key);
         });
 
         return objKeys;
-    } else if (model instanceof ZodUnion || model.constructor.name === "ZodUnion" || Array.isArray((model as ZodUnion<[AnyZodObject]>).options)) {
-        const result = (model as ZodUnion<[AnyZodObject]>).options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
+    } else if (isZodUnion(model)) {
+        const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
             const result = getKeysFromZodSchema(curr, isForPrisma, parentKey);
 
             return {
@@ -126,7 +126,7 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
         if (Object.keys(result).length > 0) {
             return result;
         }
-    } else if (model instanceof ZodIntersection || model.constructor.name === "ZodIntersection" || (!!model._def?.left && !!model._def?.right)) {
+    } else if (isZodIntersection(model)) {
         const left = getKeysFromZodSchema(model._def.left, isForPrisma, parentKey);
         const right = getKeysFromZodSchema(model._def.right, isForPrisma, parentKey);
 
@@ -134,25 +134,19 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
             ...(typeof left === "object" ? left : {}),
             ...(typeof right === "object" ? right : {}),
         };
-    } else if (model instanceof ZodArray || model.constructor.name === "ZodArray" || (model as ZodArray<ZodTypeAny>).element) {
-        const arrayElement = (model as ZodArray<ZodTypeAny>).element;
+    } else if (isZodArray(model)) {
+        const arrayElement = model.element;
 
-        if (!isForPrisma) {
-            const arrayKey = (index: number) => getKeysFromZodSchema(arrayElement, isForPrisma, `${parentKey}.${index}`) as ZodSchemaKeys;
+        if (!isForPrisma && !isZodPrimitives(arrayElement)) {
+            const arrayKey = (index: number) => getKeysFromZodSchema(arrayElement, isForPrisma, `${parentKey}.${index}`);
             arrayKey.key = parentKey!;
 
             return arrayKey;
         }
 
         return getKeysFromZodSchema(arrayElement, isForPrisma, parentKey);
-    } else if (
-        model instanceof ZodOptional ||
-        model.constructor.name === "ZodOptional" ||
-        model instanceof ZodNullable ||
-        model.constructor.name === "ZodNullable" ||
-        typeof (model as ZodOptional<ZodTypeAny>).unwrap === "function"
-    ) {
-        return getKeysFromZodSchema((model as ZodOptional<ZodTypeAny>).unwrap(), isForPrisma, parentKey);
+    } else if (isZodOptional(model) || isZodNullable(model)) {
+        return getKeysFromZodSchema(model.unwrap(), isForPrisma, parentKey);
     }
 
     if (parentKey) {
