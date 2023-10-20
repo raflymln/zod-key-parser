@@ -6,13 +6,12 @@
 >
 > ---
 >
-> #### What's New on v.1.4.0?
+> #### What's New on v.1.5.0?
 >
-> -   Improved Types, make type exactly as the result
-> -   Add handler for multiple file input
-> -   For Zod Union, if both left and right was not an object, it will treat itself as primitive value instead of an object, in the keys, it'll return the key instead of empty object
-> -   Make all keys as intersection for Keys and PrismaKeys return type
-> -   Add checking by its model props, in case if no peer dependency found (Next.js v13.5 issue)
+> -   Improved Model Checking
+> -   Data formatting options for `formatObject` and `formatFormData` (customStringParser, keepEmptyString, keepEmptyArray)
+> -   Allow multiple string value in form data (same like multiple file with the same key)
+> -   Improved string parser (now using Validator.js!)
 
 # Zod Key Parser
 
@@ -221,7 +220,7 @@ return (
 ## What You Should Know
 
 -   Currently it doesn't support non object schema, if your schema is just like `z.string()` it wont parse anything since it doesn't have a key
--   It **Supports** ZodUnion, ZodIntersection, ZodArray, ZodOptional, ZodNullable, and ZodObject also of course the basic type like string, boolean and so on, i don't know if there are any Zod class that i should be aware of since i myself doesn't use anything beside what I've specify before.
+-   It **Supports** ZodEnum, ZodUnion, ZodIntersection, ZodArray, ZodOptional, ZodNullable, and ZodObject also of course the primitives type like string, boolean and so on, i don't know if there are any Zod class that i should be aware of since i myself doesn't use anything beside what I've specify before.
 
 ## Any Suggestion or Problem?
 
