@@ -51,14 +51,15 @@
         "@web-std/file": "^3.0.3",
         "eslint": "^8.51.0",
         "prettier": "^3.0.3",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "mocha": "^10.2.0"
     },
     "dependencies": {
-        "mocha": "^10.2.0",
         "validator": "^13.11.0",
         "zod": "^3.22.4"
     },
     "peerDependencies": {
+        "validator": ">=13",
         "zod": "^3.18.0"
     }
 }
