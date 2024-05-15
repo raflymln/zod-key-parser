@@ -49,7 +49,7 @@
         "@types/node": "^20.12.12",
         "@types/validator": "^13.11.10",
         "@web-std/file": "^3.0.3",
-        "eslint": "^8.57.0",
+        "eslint": "^9.2.0",
         "mocha": "^10.4.0",
         "prettier": "^3.2.5",
         "ts-node": "^10.9.2",
