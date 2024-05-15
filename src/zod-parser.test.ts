@@ -44,6 +44,21 @@ describe("Zod Object Parser", () => {
                 b: z.number(),
             })
         ),
+
+        default: z.object({
+            key1: z.number().default(1),
+            key2: z.string().array().default([]),
+        }),
+
+        promise: z.object({
+            key1: z.number().promise(),
+            key2: z.string().array().promise(),
+        }),
+
+        readonly: z.object({
+            key1: z.number().readonly(),
+            key2: z.string().array().readonly(),
+        }),
     });
 
     const parsed = parseZodSchema(schema);
@@ -87,6 +102,24 @@ describe("Zod Object Parser", () => {
             assert.strictEqual(parsed.keys.intersection.a, "intersection.a");
             assert.strictEqual(parsed.keys.intersection.b, "intersection.b");
         });
+
+        it("Default should return an object with concatenated key name", () => {
+            assert.strictEqual(typeof parsed.keys.default, "object");
+            assert.strictEqual(parsed.keys.default.key1, "default.key1");
+            assert.strictEqual(parsed.keys.default.key2, "default.key2");
+        });
+
+        it("Promise should return an object with concatenated key name", () => {
+            assert.strictEqual(typeof parsed.keys.promise, "object");
+            assert.strictEqual(parsed.keys.promise.key1, "promise.key1");
+            assert.strictEqual(parsed.keys.promise.key2, "promise.key2");
+        });
+
+        it("Readonly should return an object with concatenated key name", () => {
+            assert.strictEqual(typeof parsed.keys.readonly, "object");
+            assert.strictEqual(parsed.keys.readonly.key1, "readonly.key1");
+            assert.strictEqual(parsed.keys.readonly.key2, "readonly.key2");
+        });
     });
 
     describe("`prismaKeys` Test", () => {
@@ -119,6 +152,21 @@ describe("Zod Object Parser", () => {
             assert.strictEqual(typeof parsed.prismaKeys.intersection.select, "object");
             assert.strictEqual(parsed.prismaKeys.intersection.select.a, true);
             assert.strictEqual(parsed.prismaKeys.intersection.select.b, true);
+
+            assert.strictEqual(typeof parsed.prismaKeys.default, "object");
+            assert.strictEqual(typeof parsed.prismaKeys.default.select, "object");
+            assert.strictEqual(parsed.prismaKeys.default.select.key1, true);
+            assert.strictEqual(parsed.prismaKeys.default.select.key2, true);
+
+            assert.strictEqual(typeof parsed.prismaKeys.promise, "object");
+            assert.strictEqual(typeof parsed.prismaKeys.promise.select, "object");
+            assert.strictEqual(parsed.prismaKeys.promise.select.key1, true);
+            assert.strictEqual(parsed.prismaKeys.promise.select.key2, true);
+
+            assert.strictEqual(typeof parsed.prismaKeys.readonly, "object");
+            assert.strictEqual(typeof parsed.prismaKeys.readonly.select, "object");
+            assert.strictEqual(parsed.prismaKeys.readonly.select.key1, true);
+            assert.strictEqual(parsed.prismaKeys.readonly.select.key2, true);
         });
     });
 });

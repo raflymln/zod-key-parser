@@ -1,4 +1,4 @@
-import { isZodIntersection, isZodObject, isZodUnion, isZodArray, isZodNullable, isZodOptional, isZodPrimitives } from ".";
+import { isZodIntersection, isZodObject, isZodUnion, isZodArray, isZodNullable, isZodOptional, isZodPrimitives, isZodDefault, isZodPromise, isZodReadonly } from ".";
 
 import { z } from "zod";
 
@@ -7,79 +7,114 @@ import assert from "assert";
 describe("Testing Zod Schema Detector", () => {
     const zodObject = z.object({});
     const zodIntersection = z.intersection(zodObject, zodObject);
-    const ZodUnion = z.union([zodObject, zodObject]);
+    const zodUnion = z.union([zodObject, zodObject]);
     const zodArray = z.array(zodObject);
     const zodOptional = zodObject.optional();
     const zodNullable = zodObject.nullable();
     const zodPrimitives = z.string();
+    const zodDefault = zodObject.default({});
+    const zodPromise = z.promise(zodObject);
+    const zodReadonly = zodObject.readonly();
+
+    const testObjects = [zodObject, zodIntersection, zodUnion, zodArray, zodOptional, zodNullable, zodPrimitives, zodDefault, zodPromise, zodReadonly];
 
     it("ZodObject", () => {
-        assert.strictEqual(isZodObject(zodObject), true);
-        assert.strictEqual(isZodObject(zodIntersection), false);
-        assert.strictEqual(isZodObject(ZodUnion), false);
-        assert.strictEqual(isZodObject(zodArray), false);
-        assert.strictEqual(isZodObject(zodOptional), false);
-        assert.strictEqual(isZodObject(zodNullable), false);
-        assert.strictEqual(isZodObject(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodObject) {
+                assert.strictEqual(isZodObject(object), false);
+            } else {
+                assert.strictEqual(isZodObject(object), true);
+            }
+        });
     });
 
     it("ZodIntersection", () => {
-        assert.strictEqual(isZodIntersection(zodObject), false);
-        assert.strictEqual(isZodIntersection(zodIntersection), true);
-        assert.strictEqual(isZodIntersection(ZodUnion), false);
-        assert.strictEqual(isZodIntersection(zodArray), false);
-        assert.strictEqual(isZodIntersection(zodOptional), false);
-        assert.strictEqual(isZodIntersection(zodNullable), false);
-        assert.strictEqual(isZodIntersection(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodIntersection) {
+                assert.strictEqual(isZodIntersection(object), false);
+            } else {
+                assert.strictEqual(isZodIntersection(object), true);
+            }
+        });
     });
 
     it("ZodUnion", () => {
-        assert.strictEqual(isZodUnion(zodObject), false);
-        assert.strictEqual(isZodUnion(zodIntersection), false);
-        assert.strictEqual(isZodUnion(ZodUnion), true);
-        assert.strictEqual(isZodUnion(zodArray), false);
-        assert.strictEqual(isZodUnion(zodOptional), false);
-        assert.strictEqual(isZodUnion(zodNullable), false);
-        assert.strictEqual(isZodUnion(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodUnion) {
+                assert.strictEqual(isZodUnion(object), false);
+            } else {
+                assert.strictEqual(isZodUnion(object), true);
+            }
+        });
     });
 
     it("ZodArray", () => {
-        assert.strictEqual(isZodArray(zodObject), false);
-        assert.strictEqual(isZodArray(zodIntersection), false);
-        assert.strictEqual(isZodArray(ZodUnion), false);
-        assert.strictEqual(isZodArray(zodArray), true);
-        assert.strictEqual(isZodArray(zodOptional), false);
-        assert.strictEqual(isZodArray(zodNullable), false);
-        assert.strictEqual(isZodArray(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodArray) {
+                assert.strictEqual(isZodArray(object), false);
+            } else {
+                assert.strictEqual(isZodArray(object), true);
+            }
+        });
     });
 
     it("ZodOptional", () => {
-        assert.strictEqual(isZodOptional(zodObject), false);
-        assert.strictEqual(isZodOptional(zodIntersection), false);
-        assert.strictEqual(isZodOptional(ZodUnion), false);
-        assert.strictEqual(isZodOptional(zodArray), false);
-        assert.strictEqual(isZodOptional(zodOptional), true);
-        assert.strictEqual(isZodOptional(zodNullable), false);
-        assert.strictEqual(isZodOptional(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodOptional) {
+                assert.strictEqual(isZodOptional(object), false);
+            } else {
+                assert.strictEqual(isZodOptional(object), true);
+            }
+        });
     });
 
     it("ZodNullable", () => {
-        assert.strictEqual(isZodNullable(zodObject), false);
-        assert.strictEqual(isZodNullable(zodIntersection), false);
-        assert.strictEqual(isZodNullable(ZodUnion), false);
-        assert.strictEqual(isZodNullable(zodArray), false);
-        assert.strictEqual(isZodNullable(zodOptional), false);
-        assert.strictEqual(isZodNullable(zodNullable), true);
-        assert.strictEqual(isZodNullable(zodPrimitives), false);
+        testObjects.forEach((object) => {
+            if (object !== zodNullable) {
+                assert.strictEqual(isZodNullable(object), false);
+            } else {
+                assert.strictEqual(isZodNullable(object), true);
+            }
+        });
     });
 
     it("ZodPrimitives", () => {
-        assert.strictEqual(isZodPrimitives(zodObject), false);
-        assert.strictEqual(isZodPrimitives(zodIntersection), false);
-        assert.strictEqual(isZodPrimitives(ZodUnion), false);
-        assert.strictEqual(isZodPrimitives(zodArray), false);
-        assert.strictEqual(isZodPrimitives(zodOptional), false);
-        assert.strictEqual(isZodPrimitives(zodNullable), false);
-        assert.strictEqual(isZodPrimitives(zodPrimitives), true);
+        testObjects.forEach((object) => {
+            if (object !== zodPrimitives) {
+                assert.strictEqual(isZodPrimitives(object), false);
+            } else {
+                assert.strictEqual(isZodPrimitives(object), true);
+            }
+        });
+    });
+
+    it("ZodDefault", () => {
+        testObjects.forEach((object) => {
+            if (object !== zodDefault) {
+                assert.strictEqual(isZodDefault(object), false);
+            } else {
+                assert.strictEqual(isZodDefault(object), true);
+            }
+        });
+    });
+
+    it("ZodPromise", () => {
+        testObjects.forEach((object) => {
+            if (object !== zodPromise) {
+                assert.strictEqual(isZodPromise(object), false);
+            } else {
+                assert.strictEqual(isZodPromise(object), true);
+            }
+        });
+    });
+
+    it("ZodReadonly", () => {
+        testObjects.forEach((object) => {
+            if (object !== zodReadonly) {
+                assert.strictEqual(isZodReadonly(object), false);
+            } else {
+                assert.strictEqual(isZodReadonly(object), true);
+            }
+        });
     });
 });

@@ -1,6 +1,6 @@
 import type { AnyZodObject, ZodTypeAny } from "zod";
 
-import { ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodFirstPartyTypeKind } from "zod";
+import { ZodPromise, ZodDefault, ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodFirstPartyTypeKind, ZodReadonly } from "zod";
 
 export const isZodObject = (model: ZodTypeAny): model is AnyZodObject => {
     return model instanceof ZodObject || model._def.typeName === ZodFirstPartyTypeKind.ZodObject;
@@ -22,8 +22,20 @@ export const isZodOptional = (model: ZodTypeAny): model is ZodOptional<ZodTypeAn
     return model instanceof ZodOptional || model._def.typeName === ZodFirstPartyTypeKind.ZodOptional;
 };
 
+export const isZodDefault = (model: ZodTypeAny): model is ZodDefault<ZodTypeAny> => {
+    return model instanceof ZodDefault || model._def.typeName === ZodFirstPartyTypeKind.ZodDefault;
+};
+
 export const isZodNullable = (model: ZodTypeAny): model is ZodNullable<ZodTypeAny> => {
     return model instanceof ZodNullable || model._def.typeName === ZodFirstPartyTypeKind.ZodNullable;
+};
+
+export const isZodPromise = (model: ZodTypeAny): model is ZodPromise<ZodTypeAny> => {
+    return model instanceof ZodPromise || model._def.typeName === ZodFirstPartyTypeKind.ZodPromise;
+};
+
+export const isZodReadonly = (model: ZodTypeAny): model is ZodReadonly<ZodTypeAny> => {
+    return model instanceof ZodReadonly || model._def.typeName === ZodFirstPartyTypeKind.ZodReadonly;
 };
 
 export const isZodPrimitives = (model: ZodTypeAny): boolean => {
@@ -42,6 +54,7 @@ export const isZodPrimitives = (model: ZodTypeAny): boolean => {
         case ZodFirstPartyTypeKind.ZodAny:
         case ZodFirstPartyTypeKind.ZodUnknown:
         case ZodFirstPartyTypeKind.ZodNever:
+        case ZodFirstPartyTypeKind.ZodNaN:
             return true;
 
         default:
