@@ -59,6 +59,11 @@ describe("Zod Object Parser", () => {
             key1: z.number().readonly(),
             key2: z.string().array().readonly(),
         }),
+
+        effects: z.object({
+            key1: z.number().transform((val) => val * 2),
+            key2: z.string().refine((val) => val.length > 5),
+        }),
     });
 
     const parsed = parseZodSchema(schema);
@@ -120,6 +125,12 @@ describe("Zod Object Parser", () => {
             assert.strictEqual(parsed.keys.readonly.key1, "readonly.key1");
             assert.strictEqual(parsed.keys.readonly.key2, "readonly.key2");
         });
+
+        it("Effects should return an object with concatenated key name", () => {
+            assert.strictEqual(typeof parsed.keys.effects, "object");
+            assert.strictEqual(parsed.keys.effects.key1, "effects.key1");
+            assert.strictEqual(parsed.keys.effects.key2, "effects.key2");
+        });
     });
 
     describe("`prismaKeys` Test", () => {
@@ -167,6 +178,11 @@ describe("Zod Object Parser", () => {
             assert.strictEqual(typeof parsed.prismaKeys.readonly.select, "object");
             assert.strictEqual(parsed.prismaKeys.readonly.select.key1, true);
             assert.strictEqual(parsed.prismaKeys.readonly.select.key2, true);
+
+            assert.strictEqual(typeof parsed.prismaKeys.effects, "object");
+            assert.strictEqual(typeof parsed.prismaKeys.effects.select, "object");
+            assert.strictEqual(parsed.prismaKeys.effects.select.key1, true);
+            assert.strictEqual(parsed.prismaKeys.effects.select.key2, true);
         });
     });
 });

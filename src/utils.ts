@@ -1,6 +1,6 @@
 import type { AnyZodObject, ZodTypeAny } from "zod";
 
-import { ZodPromise, ZodDefault, ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodFirstPartyTypeKind, ZodReadonly } from "zod";
+import { ZodEffects, ZodPromise, ZodDefault, ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodFirstPartyTypeKind, ZodReadonly } from "zod";
 
 export const isZodObject = (model: ZodTypeAny): model is AnyZodObject => {
     return model instanceof ZodObject || model._def.typeName === ZodFirstPartyTypeKind.ZodObject;
@@ -36,6 +36,10 @@ export const isZodPromise = (model: ZodTypeAny): model is ZodPromise<ZodTypeAny>
 
 export const isZodReadonly = (model: ZodTypeAny): model is ZodReadonly<ZodTypeAny> => {
     return model instanceof ZodReadonly || model._def.typeName === ZodFirstPartyTypeKind.ZodReadonly;
+};
+
+export const isZodEffects = (model: ZodTypeAny): model is ZodEffects<ZodTypeAny> => {
+    return model instanceof ZodEffects || model._def.typeName === ZodFirstPartyTypeKind.ZodEffects;
 };
 
 export const isZodPrimitives = (model: ZodTypeAny): boolean => {

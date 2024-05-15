@@ -1,6 +1,6 @@
 import type { TypeOf, ZodTypeAny } from "zod";
 
-import { isZodArray, isZodDefault, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
+import { isZodArray, isZodDefault, isZodEffects, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type NestedUnionToIntersection<T> = UnionToIntersection<{ [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K] }>;
@@ -154,6 +154,8 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
         return getKeysFromZodSchema(model.unwrap(), isForPrisma, parentKey);
     } else if (isZodDefault(model) || isZodReadonly(model)) {
         return getKeysFromZodSchema(model._def.innerType, isForPrisma, parentKey);
+    } else if (isZodEffects(model)) {
+        return getKeysFromZodSchema(model._def.schema, isForPrisma, parentKey);
     }
 
     if (parentKey) {
