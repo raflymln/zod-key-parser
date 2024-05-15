@@ -6,12 +6,9 @@
 >
 > ---
 >
-> #### What's New on v.1.5.0?
+> #### What's New on v.1.5.1?
 >
-> -   Improved Model Checking
-> -   Data formatting options for `formatObject` and `formatFormData` (customStringParser, keepEmptyString, keepEmptyArray)
-> -   Allow multiple string value in form data (same like multiple file with the same key)
-> -   Improved string parser (now using Validator.js!)
+> -   Add support for ZodDefault, ZodPromise, ZodReadonly, and ZodNaN
 
 # Zod Key Parser
 
