@@ -8,10 +8,10 @@ import toDate from "validator/lib/toDate";
 export const parseString = (str: string) => {
     if (isNumeric(str) && !isMobilePhone(str)) {
         return Number(str);
-    } else if (isDate(str)) {
-        return toDate(str)!;
     } else if (isBoolean(str)) {
         return toBoolean(str);
+    } else if (isDate(str)) {
+        return toDate(str)!;
     }
 
     return str;

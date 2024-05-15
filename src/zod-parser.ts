@@ -42,7 +42,12 @@ export type ParsedFormKeys<Type, PrevKey extends string = ""> = Required<{
                   <Index extends number>(index: Index): ParsedFormKeys<Type[K], K extends string ? `${K}.${Index}` : "">[0];
                   key: K;
               }
-            : ParsedFormKeys<Type[K], CreateKeyWithPrevKey<PrevKey, K>>
+            : ParsedFormKeys<
+                  Type[K],
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-expect-error
+                  CreateKeyWithPrevKey<PrevKey, K>
+              >
         : CreateKeyWithPrevKey<PrevKey, K>; // If key was a primitive (string, number, boolean)
     // #endregion
 }>;
