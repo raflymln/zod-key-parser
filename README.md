@@ -6,9 +6,10 @@
 >
 > ---
 >
-> #### What's New on v.1.5.1?
+> #### What's New on v.1.5.2?
 >
 > -   Add support for ZodDefault, ZodPromise, ZodReadonly, and ZodNaN
+> -   Add support for ZodEffects (refine, transform, etc)
 
 # Zod Key Parser
 
