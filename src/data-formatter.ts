@@ -5,12 +5,22 @@ import isNumeric from "validator/lib/isNumeric";
 import toBoolean from "validator/lib/toBoolean";
 import toDate from "validator/lib/toDate";
 
-export const parseString = (str: string) => {
-    if (isNumeric(str) && !isMobilePhone(str)) {
+export type StringParserOptions = {
+    formatNumber?: boolean;
+    formatBoolean?: boolean;
+    formatDate?: boolean;
+};
+
+export const parseString = (str: string, options: StringParserOptions = {}) => {
+    options.formatBoolean ??= true;
+    options.formatDate ??= true;
+    options.formatNumber ??= true;
+
+    if (isNumeric(str) && !isMobilePhone(str) && options.formatNumber) {
         return Number(str);
-    } else if (isBoolean(str)) {
+    } else if (isBoolean(str) && options.formatBoolean) {
         return toBoolean(str);
-    } else if (isDate(str)) {
+    } else if (isDate(str) && options.formatDate) {
         return toDate(str)!;
     }
 
@@ -21,8 +31,11 @@ export type DataFormatterOptions = {
     /**
      * If the returned value is undefined, the value then will be parsed using the default parser.
      * But if the returned value is anything else, the value will be set to the returned value.
+     *
+     * @param name The name of the key.
+     * @param value The value of the key (If on array, the value is the element of the array)
      */
-    customStringParser?: (value: string) => FormattedFormData | undefined;
+    customStringParser?: ({ name, value }: { name: string; value: string }) => FormattedFormData | undefined;
 
     /**
      * If true, empty strings will be kept as empty strings.
@@ -34,6 +47,12 @@ export type DataFormatterOptions = {
      * If true, empty strings in arrays will be kept as empty strings.
      */
     keepEmptyStringInArray?: boolean;
+
+    /**
+     * Options for the string parser.
+     * By default, all options are enabled.
+     */
+    stringParserOptions?: StringParserOptions;
 };
 
 export type FormattedFormData =
@@ -74,7 +93,7 @@ export const formatObject = (data: Record<string, FormattedFormData>, options?: 
 
         if (typeof value === "string") {
             if (options?.customStringParser) {
-                const customParsed = options.customStringParser(value);
+                const customParsed = options.customStringParser({ name: key, value });
 
                 if (customParsed !== undefined) {
                     current[lastPart] = customParsed;
@@ -85,7 +104,7 @@ export const formatObject = (data: Record<string, FormattedFormData>, options?: 
             if (value === "" && !options?.keepEmptyString) {
                 delete current[lastPart];
             } else {
-                current[lastPart] = parseString(value);
+                current[lastPart] = parseString(value, options?.stringParserOptions);
             }
         } else if (Array.isArray(value)) {
             const filtered = options?.keepEmptyStringInArray ? value : value.filter((v) => v !== "");
@@ -94,7 +113,7 @@ export const formatObject = (data: Record<string, FormattedFormData>, options?: 
                 if (typeof v !== "string") continue;
 
                 if (options?.customStringParser) {
-                    const customParsed = options.customStringParser(v);
+                    const customParsed = options.customStringParser({ name: key, value: v });
 
                     if (customParsed !== undefined) {
                         filtered[index] = customParsed;
@@ -102,7 +121,7 @@ export const formatObject = (data: Record<string, FormattedFormData>, options?: 
                     }
                 }
 
-                filtered[index] = parseString(v);
+                filtered[index] = parseString(v, options?.stringParserOptions);
             }
 
             current[lastPart] = filtered;

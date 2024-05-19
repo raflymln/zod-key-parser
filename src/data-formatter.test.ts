@@ -109,7 +109,7 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
     }
 
     const formatterOptions: DataFormatterOptions = {
-        customStringParser: (value: string) => {
+        customStringParser: ({ value }) => {
             // Cannot parse localized phone number
             if (value === inputTestObject.phoneNumberIndonesia) {
                 return inputTestObject.phoneNumberIndonesia;

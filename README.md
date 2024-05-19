@@ -6,10 +6,12 @@
 >
 > ---
 >
-> #### What's New on v.1.5.2?
+> #### What's New on v.1.5.3?
 >
 > -   Add support for ZodDefault, ZodPromise, ZodReadonly, and ZodNaN
 > -   Add support for ZodEffects (refine, transform, etc)
+> -   BREAKING CHANGE: If you use customStringParser, the props is now an object instead of single string
+> -   Add more string parser options
 
 # Zod Key Parser
 
