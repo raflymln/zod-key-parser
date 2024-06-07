@@ -19,6 +19,8 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
 
         dateOfBirth: Date;
         gmt7Date: Date;
+        dateISO: Date;
+        dateString: string;
 
         smallNumber: number;
         mediumNumber: string;
@@ -68,6 +70,8 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
 
         dateOfBirth: "1999-01-01",
         gmt7Date: "2017-08-25 09:11:35 GMT+7",
+        dateISO: new Date("2022-01-01").toISOString(),
+        dateString: new Date().toString(),
 
         smallNumber: "269",
         mediumNumber: Date.now().toString(),
@@ -158,6 +162,12 @@ describe("Data Formatter (`formatObject` and `formatFormData`)", () => {
 
         assert.strictEqual(formDataResult.gmt7Date instanceof Date, true);
         assert.strictEqual(formDataResult.gmt7Date.toISOString(), new Date(inputTestObject.gmt7Date).toISOString());
+
+        assert.strictEqual(formDataResult.dateISO instanceof Date, true);
+        assert.strictEqual(formDataResult.dateISO.toISOString(), new Date(inputTestObject.dateISO).toISOString());
+
+        assert.strictEqual(formDataResult.dateString, inputTestObject.dateString);
+        assert.strictEqual(formDataResult.dateString, new Date(inputTestObject.dateString).toString());
     });
 
     it("The value of this should be a number version of the input (number)", () => {

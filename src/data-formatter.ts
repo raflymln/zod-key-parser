@@ -1,5 +1,4 @@
 import isBoolean from "validator/lib/isBoolean";
-import isDate from "validator/lib/isDate";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import isNumeric from "validator/lib/isNumeric";
 import toBoolean from "validator/lib/toBoolean";
@@ -11,6 +10,29 @@ export type StringParserOptions = {
     formatDate?: boolean;
 };
 
+function isValidDate(dateString: string): boolean {
+    // Check if the input is a string
+    if (typeof dateString !== "string") {
+        return false;
+    }
+
+    // Attempt to create a Date object from the input string
+    const date = new Date(dateString);
+
+    // Check if the resulting Date object is valid
+    if (isNaN(date.getTime())) {
+        return false;
+    }
+
+    // Check if the input string matches the ISO format
+    const isoRegex = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})?)?$/;
+    if (!isoRegex.test(dateString)) {
+        return false;
+    }
+
+    return true;
+}
+
 export const parseString = (str: string, options: StringParserOptions = {}) => {
     options.formatBoolean ??= true;
     options.formatDate ??= true;
@@ -20,7 +42,7 @@ export const parseString = (str: string, options: StringParserOptions = {}) => {
         return Number(str);
     } else if (isBoolean(str) && options.formatBoolean) {
         return toBoolean(str);
-    } else if (isDate(str) && options.formatDate) {
+    } else if (isValidDate(str) && options.formatDate) {
         return toDate(str)!;
     }
 
