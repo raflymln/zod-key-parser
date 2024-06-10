@@ -54,9 +54,7 @@ export type ParsedFormKeys<Type, PrevKey extends string = ""> = Required<{
 
 /**
  * Map object keys and it's children to concatenated string
- * Same as ParsedFormKeys but follows Prisma ORM select syntax
- *
- * @see https://www.prisma.io/docs/concepts/components/prisma-client/select-fields#select-specific-fields
+ * Same as ParsedFormKeys but return boolean instead of string or any other type
  *
  * @example
  * // Input
@@ -85,14 +83,14 @@ export type ParsedFormKeys<Type, PrevKey extends string = ""> = Required<{
  *     }
  * }
  */
-export type ParsedPrismaKeys<Type> = Required<{
+export type ParsedSelectKeys<Type> = Required<{
     // #region
     [K in keyof Type]: IsObject<Type[K]> extends true // If key was an object, or an array
         ? Record<
               "select",
-              ParsedPrismaKeys<Type[K]> extends object[]
-                  ? ParsedPrismaKeys<ArrayElement<Type[K]>> // If key was an array, get the first element
-                  : ParsedPrismaKeys<Type[K]> // If key was an object
+              ParsedSelectKeys<Type[K]> extends object[]
+                  ? ParsedSelectKeys<ArrayElement<Type[K]>> // If key was an array, get the first element
+                  : ParsedSelectKeys<Type[K]> // If key was an object
           >
         : true; // If key was a primitive (string, number, boolean)
     // #endregion
@@ -109,18 +107,18 @@ export type ZodSchemaKeys =
           key: string;
       };
 
-export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, parentKey?: string): ZodSchemaKeys => {
+export const getKeysFromZodSchema = (model: ZodTypeAny, isSelectKey: boolean, parentKey?: string): ZodSchemaKeys => {
     if (isZodObject(model)) {
         const objKeys: ZodSchemaKeys = {};
 
         Object.entries(model.shape).map(([key, schema]) => {
-            objKeys[key] = getKeysFromZodSchema(schema as ZodTypeAny, isForPrisma, parentKey ? `${parentKey}.${key}` : key);
+            objKeys[key] = getKeysFromZodSchema(schema as ZodTypeAny, isSelectKey, parentKey ? `${parentKey}.${key}` : key);
         });
 
         return objKeys;
     } else if (isZodUnion(model)) {
         const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
-            const result = getKeysFromZodSchema(curr, isForPrisma, parentKey);
+            const result = getKeysFromZodSchema(curr, isSelectKey, parentKey);
 
             return {
                 ...(typeof prev === "object" ? prev : {}),
@@ -132,8 +130,8 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
             return result;
         }
     } else if (isZodIntersection(model)) {
-        const left = getKeysFromZodSchema(model._def.left, isForPrisma, parentKey);
-        const right = getKeysFromZodSchema(model._def.right, isForPrisma, parentKey);
+        const left = getKeysFromZodSchema(model._def.left, isSelectKey, parentKey);
+        const right = getKeysFromZodSchema(model._def.right, isSelectKey, parentKey);
 
         return {
             ...(typeof left === "object" ? left : {}),
@@ -142,48 +140,49 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
     } else if (isZodArray(model)) {
         const arrayElement = model.element;
 
-        if (!isForPrisma && !isZodPrimitives(arrayElement)) {
-            const arrayKey = (index: number) => getKeysFromZodSchema(arrayElement, isForPrisma, `${parentKey}.${index}`);
+        if (!isSelectKey && !isZodPrimitives(arrayElement)) {
+            const arrayKey = (index: number) => getKeysFromZodSchema(arrayElement, isSelectKey, `${parentKey}.${index}`);
             arrayKey.key = parentKey!;
 
             return arrayKey;
         }
 
-        return getKeysFromZodSchema(arrayElement, isForPrisma, parentKey);
+        return getKeysFromZodSchema(arrayElement, isSelectKey, parentKey);
     } else if (isZodOptional(model) || isZodNullable(model) || isZodPromise(model)) {
-        return getKeysFromZodSchema(model.unwrap(), isForPrisma, parentKey);
+        return getKeysFromZodSchema(model.unwrap(), isSelectKey, parentKey);
     } else if (isZodDefault(model) || isZodReadonly(model)) {
-        return getKeysFromZodSchema(model._def.innerType, isForPrisma, parentKey);
+        return getKeysFromZodSchema(model._def.innerType, isSelectKey, parentKey);
     } else if (isZodEffects(model)) {
-        return getKeysFromZodSchema(model._def.schema, isForPrisma, parentKey);
+        return getKeysFromZodSchema(model._def.schema, isSelectKey, parentKey);
     }
 
     if (parentKey) {
-        return isForPrisma ? true : parentKey;
+        return isSelectKey ? true : parentKey;
     }
 
     return {};
 };
 
-export const convertExtractedZodKeysToPrismaSelect = (keys: ZodSchemaKeys) => {
-    const prismaKeysSelect = {} as Record<string, unknown>;
+export const convertExtractedZodKeysToSelectKeys = (keys: ZodSchemaKeys) => {
+    const selections = {} as Record<string, unknown>;
 
     for (const [key, value] of Object.entries(keys)) {
         if (typeof value === "boolean") {
-            prismaKeysSelect[key] = value;
+            selections[key] = value;
         } else {
-            prismaKeysSelect[key] = {
-                select: convertExtractedZodKeysToPrismaSelect(value),
+            selections[key] = {
+                select: convertExtractedZodKeysToSelectKeys(value),
             };
         }
     }
 
-    return prismaKeysSelect;
+    return selections;
 };
 
 export type ParsedZodSchema<Model extends ZodTypeAny> = {
     keys: ParsedFormKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
-    prismaKeys: ParsedPrismaKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
+    prismaKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
+    selectKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
     model: Model;
 };
 
@@ -192,7 +191,11 @@ export const parseZodSchema = <Model extends ZodTypeAny>(model: Model): ParsedZo
 
     return {
         keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfModel>,
-        prismaKeys: convertExtractedZodKeysToPrismaSelect(getKeysFromZodSchema(model, true)) as ParsedPrismaKeys<TypeOfModel>,
+        get prismaKeys() {
+            console.warn("prismaKeys is deprecated, please use selectKeys instead");
+            return convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<TypeOfModel>;
+        },
+        selectKeys: convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<TypeOfModel>,
         model,
     };
 };

@@ -6,17 +6,18 @@
 >
 > ---
 >
-> #### What's New on v.1.5.4?
+> #### What's New on v.1.5.5?
 >
 > -   Add support for ZodDefault, ZodPromise, ZodReadonly, and ZodNaN
 > -   Add support for ZodEffects (refine, transform, etc)
 > -   BREAKING CHANGE: If you use customStringParser, the props is now an object instead of single string
 > -   Add more string parser options
 > -   Fix broken Date validation
+> -   Deprecating `prismaKeys`, use `selectKeys` instead
 
 # Zod Key Parser
 
-Parse your Zod schema into keys or Prisma ORM select format
+Parse your Zod schema into keys or ORM select format
 
 ## What This Do?
 
@@ -83,7 +84,7 @@ So that you can use it on your form like this:
 ### And This
 
 ```ts
-// schema.prismaKeys
+// schema.selectKeys
 {
   "a": true,
   "b": true,
@@ -108,12 +109,12 @@ So that you can use it on your form like this:
 }
 ```
 
-So that you can use it on your Prisma ORM like this
+So that you can use it on your ORM like this
 
 ```ts
-const something = await prisma.table.findUnique({
+const something = await orm.table.findUnique({
   where: ...,
-  select: schema.prismaKeys
+  select: schema.selectKeys
 })
 ```
 
@@ -211,7 +212,7 @@ return (
 
 -   Avoid typos in form name
 -   Easily parsed form data with a little lines of code
--   For Prisma, improve your database performance by only selecting data to be used
+-   For ORM, improve your database performance by only selecting data to be used
 -   _You'll lovin it like McDonalds says_
 
 #### Cons

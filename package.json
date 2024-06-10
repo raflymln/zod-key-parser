@@ -1,12 +1,13 @@
 {
     "name": "zod-key-parser",
     "version": "1.5.4",
-    "description": "Parse zod schema into form keys or prisma select format",
+    "description": "Parse zod schema into form keys or select format",
     "homepage": "https://github.com/raflymln/zod-key-parser#readme",
     "repository": "https://github.com/raflymln/zod-key-parser",
     "keywords": [
         "zod",
         "prisma",
+        "drizzle",
         "form",
         "schema",
         "parser",

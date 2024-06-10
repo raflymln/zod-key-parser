@@ -133,56 +133,56 @@ describe("Zod Object Parser", () => {
         });
     });
 
-    describe("`prismaKeys` Test", () => {
+    describe("`selectKeys` Test", () => {
         it("Primitives should always return always return true", () => {
-            assert.strictEqual(parsed.prismaKeys.key1, true);
-            assert.strictEqual(parsed.prismaKeys.key2, true);
-            assert.strictEqual(parsed.prismaKeys.key3, true);
-            assert.strictEqual(parsed.prismaKeys.union, true);
-            assert.strictEqual(parsed.prismaKeys.strArray, true);
+            assert.strictEqual(parsed.selectKeys.key1, true);
+            assert.strictEqual(parsed.selectKeys.key2, true);
+            assert.strictEqual(parsed.selectKeys.key3, true);
+            assert.strictEqual(parsed.selectKeys.union, true);
+            assert.strictEqual(parsed.selectKeys.strArray, true);
         });
 
         it("Any other should return an object inside the `select` with the key name and `true` value", () => {
-            assert.strictEqual(typeof parsed.prismaKeys.array, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.array.select, "object");
-            assert.strictEqual(parsed.prismaKeys.array.select.key1, true);
-            assert.strictEqual(parsed.prismaKeys.array.select.key2, true);
-            assert.strictEqual(parsed.prismaKeys.array.select.key3, true);
-            assert.strictEqual(parsed.prismaKeys.array.select.key4, true);
+            assert.strictEqual(typeof parsed.selectKeys.array, "object");
+            assert.strictEqual(typeof parsed.selectKeys.array.select, "object");
+            assert.strictEqual(parsed.selectKeys.array.select.key1, true);
+            assert.strictEqual(parsed.selectKeys.array.select.key2, true);
+            assert.strictEqual(parsed.selectKeys.array.select.key3, true);
+            assert.strictEqual(parsed.selectKeys.array.select.key4, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.object, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.object.select, "object");
-            assert.strictEqual(parsed.prismaKeys.object.select.ia, true);
+            assert.strictEqual(typeof parsed.selectKeys.object, "object");
+            assert.strictEqual(typeof parsed.selectKeys.object.select, "object");
+            assert.strictEqual(parsed.selectKeys.object.select.ia, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.unionObject, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.unionObject.select, "object");
-            assert.strictEqual(parsed.prismaKeys.unionObject.select.a, true);
-            assert.strictEqual(parsed.prismaKeys.unionObject.select.b, true);
+            assert.strictEqual(typeof parsed.selectKeys.unionObject, "object");
+            assert.strictEqual(typeof parsed.selectKeys.unionObject.select, "object");
+            assert.strictEqual(parsed.selectKeys.unionObject.select.a, true);
+            assert.strictEqual(parsed.selectKeys.unionObject.select.b, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.intersection, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.intersection.select, "object");
-            assert.strictEqual(parsed.prismaKeys.intersection.select.a, true);
-            assert.strictEqual(parsed.prismaKeys.intersection.select.b, true);
+            assert.strictEqual(typeof parsed.selectKeys.intersection, "object");
+            assert.strictEqual(typeof parsed.selectKeys.intersection.select, "object");
+            assert.strictEqual(parsed.selectKeys.intersection.select.a, true);
+            assert.strictEqual(parsed.selectKeys.intersection.select.b, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.default, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.default.select, "object");
-            assert.strictEqual(parsed.prismaKeys.default.select.key1, true);
-            assert.strictEqual(parsed.prismaKeys.default.select.key2, true);
+            assert.strictEqual(typeof parsed.selectKeys.default, "object");
+            assert.strictEqual(typeof parsed.selectKeys.default.select, "object");
+            assert.strictEqual(parsed.selectKeys.default.select.key1, true);
+            assert.strictEqual(parsed.selectKeys.default.select.key2, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.promise, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.promise.select, "object");
-            assert.strictEqual(parsed.prismaKeys.promise.select.key1, true);
-            assert.strictEqual(parsed.prismaKeys.promise.select.key2, true);
+            assert.strictEqual(typeof parsed.selectKeys.promise, "object");
+            assert.strictEqual(typeof parsed.selectKeys.promise.select, "object");
+            assert.strictEqual(parsed.selectKeys.promise.select.key1, true);
+            assert.strictEqual(parsed.selectKeys.promise.select.key2, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.readonly, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.readonly.select, "object");
-            assert.strictEqual(parsed.prismaKeys.readonly.select.key1, true);
-            assert.strictEqual(parsed.prismaKeys.readonly.select.key2, true);
+            assert.strictEqual(typeof parsed.selectKeys.readonly, "object");
+            assert.strictEqual(typeof parsed.selectKeys.readonly.select, "object");
+            assert.strictEqual(parsed.selectKeys.readonly.select.key1, true);
+            assert.strictEqual(parsed.selectKeys.readonly.select.key2, true);
 
-            assert.strictEqual(typeof parsed.prismaKeys.effects, "object");
-            assert.strictEqual(typeof parsed.prismaKeys.effects.select, "object");
-            assert.strictEqual(parsed.prismaKeys.effects.select.key1, true);
-            assert.strictEqual(parsed.prismaKeys.effects.select.key2, true);
+            assert.strictEqual(typeof parsed.selectKeys.effects, "object");
+            assert.strictEqual(typeof parsed.selectKeys.effects.select, "object");
+            assert.strictEqual(parsed.selectKeys.effects.select.key1, true);
+            assert.strictEqual(parsed.selectKeys.effects.select.key2, true);
         });
     });
 });
@@ -214,12 +214,12 @@ describe("Zod Intersection Parser", () => {
         });
     });
 
-    describe("`prismaKeys` Test", () => {
+    describe("`selectKeys` Test", () => {
         it("Should return an object with the key name and `true` value", () => {
-            assert.strictEqual(typeof parsed.prismaKeys, "object");
-            assert.strictEqual(typeof parsed.prismaKeys, "object");
-            assert.strictEqual(parsed.prismaKeys.a, true);
-            assert.strictEqual(parsed.prismaKeys.b, true);
+            assert.strictEqual(typeof parsed.selectKeys, "object");
+            assert.strictEqual(typeof parsed.selectKeys, "object");
+            assert.strictEqual(parsed.selectKeys.a, true);
+            assert.strictEqual(parsed.selectKeys.b, true);
         });
     });
 });
@@ -251,12 +251,12 @@ describe("Zod Union Parser", () => {
         });
     });
 
-    describe("`prismaKeys` Test", () => {
+    describe("`selectKeys` Test", () => {
         it("Should return an object with the key name and `true` value", () => {
-            assert.strictEqual(typeof parsed.prismaKeys, "object");
-            assert.strictEqual(typeof parsed.prismaKeys, "object");
-            assert.strictEqual(parsed.prismaKeys.a, true);
-            assert.strictEqual(parsed.prismaKeys.b, true);
+            assert.strictEqual(typeof parsed.selectKeys, "object");
+            assert.strictEqual(typeof parsed.selectKeys, "object");
+            assert.strictEqual(parsed.selectKeys.a, true);
+            assert.strictEqual(parsed.selectKeys.b, true);
         });
     });
 });
