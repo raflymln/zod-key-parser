@@ -1,6 +1,6 @@
 {
   "name": "zod-key-parser",
-  "version": "2.0.0",
+  "version": "1.5.5",
   "description": "Parse zod schema into form keys or select format",
   "homepage": "https://github.com/raflymln/zod-key-parser#readme",
   "repository": "https://github.com/raflymln/zod-key-parser",
@@ -42,13 +42,6 @@
     "name": "Rafly Maulana",
     "url": "https://raflymaulana.me"
   },
-  "contributors": [
-    {
-      "email": "me@onefatir.dev",
-      "name": "Fatir Kurniawan",
-      "url": "https://onefatir.dev"
-    }
-  ],
   "license": "MIT",
   "devDependencies": {
     "@raflymln/eslint-config": "^1.2.1",
