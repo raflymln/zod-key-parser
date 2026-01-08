@@ -1,6 +1,6 @@
-import type { TypeOf, ZodTypeAny } from "zod";
+import type { ZodType, infer as Infer } from "zod";
 
-import { isZodArray, isZodDefault, isZodEffects, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
+import { isZodArray, isZodDefault, isZodPipe, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type NestedUnionToIntersection<T> = UnionToIntersection<{ [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K] }>;
@@ -186,8 +186,8 @@ export type ParsedZodSchema<Model extends ZodTypeAny> = {
     model: Model;
 };
 
-export const parseZodSchema = <Model extends ZodTypeAny>(model: Model): ParsedZodSchema<Model> => {
-    type TypeOfModel = Required<NestedUnionToIntersection<TypeOf<Model>>>;
+export const parseZodSchema = <Model extends ZodType>(model: Model): ParsedZodSchema<Model> => {
+    type InferredModel = Required<NestedUnionToIntersection<Infer<Model>>>;
 
     return {
         keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfModel>,

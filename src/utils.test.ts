@@ -1,4 +1,18 @@
-import { isZodIntersection, isZodObject, isZodUnion, isZodArray, isZodNullable, isZodOptional, isZodPrimitives, isZodDefault, isZodPromise, isZodReadonly, isZodEffects } from ".";
+import {
+    isZodIntersection,
+    isZodObject,
+    isZodUnion,
+    isZodArray,
+    isZodNullable,
+    isZodOptional,
+    isZodPrimitives,
+    isZodDefault,
+    isZodPromise,
+    isZodReadonly,
+    isZodPipe,
+    formatObject,
+    parseZodSchema,
+} from ".";
 
 import { z } from "zod";
 
@@ -15,9 +29,9 @@ describe("Testing Zod Schema Detector", () => {
     const zodDefault = zodObject.default({});
     const zodPromise = z.promise(zodObject);
     const zodReadonly = zodObject.readonly();
-    const zodEffects = z.object({}).transform(() => {});
+    const zodPipe = z.object({}).transform(() => {});
 
-    const testObjects = [zodObject, zodIntersection, zodUnion, zodArray, zodOptional, zodNullable, zodPrimitives, zodDefault, zodPromise, zodReadonly, zodEffects];
+    const testObjects = [zodObject, zodIntersection, zodUnion, zodArray, zodOptional, zodNullable, zodPrimitives, zodDefault, zodPromise, zodReadonly, zodPipe];
 
     it("ZodObject", () => {
         testObjects.forEach((object) => {
@@ -119,12 +133,12 @@ describe("Testing Zod Schema Detector", () => {
         });
     });
 
-    it("ZodEffects", () => {
+    it("ZodPipe", () => {
         testObjects.forEach((object) => {
-            if (object !== zodEffects) {
-                assert.strictEqual(isZodEffects(object), false);
+            if (object !== zodPipe) {
+                assert.strictEqual(isZodPipe(object), false);
             } else {
-                assert.strictEqual(isZodEffects(object), true);
+                assert.strictEqual(isZodPipe(object), true);
             }
         });
     });
