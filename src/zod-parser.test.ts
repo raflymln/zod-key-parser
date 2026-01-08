@@ -51,8 +51,8 @@ describe("Zod Object Parser", () => {
         }),
 
         promise: z.object({
-            key1: z.number().promise(),
-            key2: z.string().array().promise(),
+            key1: z.promise(z.number()),
+            key2: z.promise(z.string().array()),
         }),
 
         readonly: z.object({
@@ -71,7 +71,7 @@ describe("Zod Object Parser", () => {
     describe("`model` Test", () => {
         it("The return model should be the same as the input", () => {
             assert.deepStrictEqual(parsed.model, schema);
-            assert.strictEqual(parsed.model._def.typeName, schema._def.typeName);
+            assert.strictEqual(parsed.model.def.type, schema.def.type);
         });
     });
 
@@ -202,7 +202,7 @@ describe("Zod Intersection Parser", () => {
     describe("`model` Test", () => {
         it("The return model should be the same as the input", () => {
             assert.deepStrictEqual(parsed.model, schema);
-            assert.strictEqual(parsed.model._def.typeName, schema._def.typeName);
+            assert.strictEqual(parsed.model.def.type, schema.def.type);
         });
     });
 
@@ -239,7 +239,7 @@ describe("Zod Union Parser", () => {
     describe("`model` Test", () => {
         it("The return model should be the same as the input", () => {
             assert.deepStrictEqual(parsed.model, schema);
-            assert.strictEqual(parsed.model._def.typeName, schema._def.typeName);
+            assert.strictEqual(parsed.model.def.type, schema.def.type);
         });
     });
 

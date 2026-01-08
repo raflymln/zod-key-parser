@@ -1,6 +1,6 @@
-import type { TypeOf, ZodTypeAny } from "zod";
+import type { ZodType, infer as Infer } from "zod";
 
-import { isZodArray, isZodDefault, isZodEffects, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
+import { isZodArray, isZodDefault, isZodPipe, isZodIntersection, isZodNullable, isZodObject, isZodOptional, isZodPrimitives, isZodPromise, isZodReadonly, isZodUnion } from ".";
 
 export type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type NestedUnionToIntersection<T> = UnionToIntersection<{ [K in keyof T]: T[K] extends object ? (T[K] extends infer U ? UnionToIntersection<U> : never) : T[K] }>;
@@ -109,17 +109,17 @@ export type ZodSchemaKeys =
           key: string;
       };
 
-export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, parentKey?: string): ZodSchemaKeys => {
+export const getKeysFromZodSchema = (model: ZodType, isForPrisma: boolean, parentKey?: string): ZodSchemaKeys => {
     if (isZodObject(model)) {
         const objKeys: ZodSchemaKeys = {};
 
         Object.entries(model.shape).map(([key, schema]) => {
-            objKeys[key] = getKeysFromZodSchema(schema as ZodTypeAny, isForPrisma, parentKey ? `${parentKey}.${key}` : key);
+            objKeys[key] = getKeysFromZodSchema(schema as ZodType, isForPrisma, parentKey ? `${parentKey}.${key}` : key);
         });
 
         return objKeys;
     } else if (isZodUnion(model)) {
-        const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
+        const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodType) => {
             const result = getKeysFromZodSchema(curr, isForPrisma, parentKey);
 
             return {
@@ -153,9 +153,9 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isForPrisma: boolean, pa
     } else if (isZodOptional(model) || isZodNullable(model) || isZodPromise(model)) {
         return getKeysFromZodSchema(model.unwrap(), isForPrisma, parentKey);
     } else if (isZodDefault(model) || isZodReadonly(model)) {
-        return getKeysFromZodSchema(model._def.innerType, isForPrisma, parentKey);
-    } else if (isZodEffects(model)) {
-        return getKeysFromZodSchema(model._def.schema, isForPrisma, parentKey);
+        return getKeysFromZodSchema(model.def.innerType, isForPrisma, parentKey);
+    } else if (isZodPipe(model)) {
+        return getKeysFromZodSchema(model._zod.def.out as ZodType, isForPrisma, parentKey);
     }
 
     if (parentKey) {
@@ -181,18 +181,18 @@ export const convertExtractedZodKeysToPrismaSelect = (keys: ZodSchemaKeys) => {
     return prismaKeysSelect;
 };
 
-export type ParsedZodSchema<Model extends ZodTypeAny> = {
-    keys: ParsedFormKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
-    prismaKeys: ParsedPrismaKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
+export type ParsedZodSchema<Model extends ZodType> = {
+    keys: ParsedFormKeys<Required<NestedUnionToIntersection<Infer<Model>>>>;
+    prismaKeys: ParsedPrismaKeys<Required<NestedUnionToIntersection<Infer<Model>>>>;
     model: Model;
 };
 
-export const parseZodSchema = <Model extends ZodTypeAny>(model: Model): ParsedZodSchema<Model> => {
-    type TypeOfModel = Required<NestedUnionToIntersection<TypeOf<Model>>>;
+export const parseZodSchema = <Model extends ZodType>(model: Model): ParsedZodSchema<Model> => {
+    type InferredModel = Required<NestedUnionToIntersection<Infer<Model>>>;
 
     return {
-        keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfModel>,
-        prismaKeys: convertExtractedZodKeysToPrismaSelect(getKeysFromZodSchema(model, true)) as ParsedPrismaKeys<TypeOfModel>,
+        keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<InferredModel>,
+        prismaKeys: convertExtractedZodKeysToPrismaSelect(getKeysFromZodSchema(model, true)) as ParsedPrismaKeys<InferredModel>,
         model,
     };
 };
