@@ -1,64 +1,64 @@
-import type { AnyZodObject, ZodTypeAny } from "zod";
+import type { ZodType } from "zod";
 
-import { ZodEffects, ZodPromise, ZodDefault, ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodFirstPartyTypeKind, ZodReadonly } from "zod";
+import { ZodPromise, ZodDefault, ZodOptional, ZodIntersection, ZodUnion, ZodObject, ZodArray, ZodNullable, ZodReadonly, ZodPipe } from "zod";
 
-export const isZodObject = (model: ZodTypeAny): model is AnyZodObject => {
-    return model instanceof ZodObject || model._def.typeName === ZodFirstPartyTypeKind.ZodObject;
+export const isZodObject = (model: ZodType): model is ZodObject => {
+    return model instanceof ZodObject || model.def.type === "object";
 };
 
-export const isZodUnion = (model: ZodTypeAny): model is ZodUnion<[AnyZodObject]> => {
-    return model instanceof ZodUnion || model._def.typeName === ZodFirstPartyTypeKind.ZodUnion;
+export const isZodUnion = (model: ZodType): model is ZodUnion<[ZodType<ZodObject>]> => {
+    return model instanceof ZodUnion || model.def.type === "union";
 };
 
-export const isZodIntersection = (model: ZodTypeAny): model is ZodIntersection<ZodTypeAny, ZodTypeAny> => {
-    return model instanceof ZodIntersection || model._def.typeName === ZodFirstPartyTypeKind.ZodIntersection;
+export const isZodIntersection = (model: ZodType): model is ZodIntersection<ZodType, ZodType> => {
+    return model instanceof ZodIntersection || model.def.type === "intersection";
 };
 
-export const isZodArray = (model: ZodTypeAny): model is ZodArray<ZodTypeAny> => {
-    return model instanceof ZodArray || model._def.typeName === ZodFirstPartyTypeKind.ZodArray;
+export const isZodArray = (model: ZodType): model is ZodArray<ZodType> => {
+    return model instanceof ZodArray || model.def.type === "array";
 };
 
-export const isZodOptional = (model: ZodTypeAny): model is ZodOptional<ZodTypeAny> => {
-    return model instanceof ZodOptional || model._def.typeName === ZodFirstPartyTypeKind.ZodOptional;
+export const isZodOptional = (model: ZodType): model is ZodOptional<ZodType> => {
+    return model instanceof ZodOptional || model.def.type === "optional";
 };
 
-export const isZodDefault = (model: ZodTypeAny): model is ZodDefault<ZodTypeAny> => {
-    return model instanceof ZodDefault || model._def.typeName === ZodFirstPartyTypeKind.ZodDefault;
+export const isZodDefault = (model: ZodType): model is ZodDefault<ZodType> => {
+    return model instanceof ZodDefault || model.def.type === "default";
 };
 
-export const isZodNullable = (model: ZodTypeAny): model is ZodNullable<ZodTypeAny> => {
-    return model instanceof ZodNullable || model._def.typeName === ZodFirstPartyTypeKind.ZodNullable;
+export const isZodNullable = (model: ZodType): model is ZodNullable<ZodType> => {
+    return model instanceof ZodNullable || model.def.type === "nullable";
 };
 
-export const isZodPromise = (model: ZodTypeAny): model is ZodPromise<ZodTypeAny> => {
-    return model instanceof ZodPromise || model._def.typeName === ZodFirstPartyTypeKind.ZodPromise;
+export const isZodPromise = (model: ZodType): model is ZodPromise<ZodType> => {
+    return model instanceof ZodPromise || model.def.type === "promise";
 };
 
-export const isZodReadonly = (model: ZodTypeAny): model is ZodReadonly<ZodTypeAny> => {
-    return model instanceof ZodReadonly || model._def.typeName === ZodFirstPartyTypeKind.ZodReadonly;
+export const isZodReadonly = (model: ZodType): model is ZodReadonly<ZodType> => {
+    return model instanceof ZodReadonly || model.def.type === "readonly";
 };
 
-export const isZodEffects = (model: ZodTypeAny): model is ZodEffects<ZodTypeAny> => {
-    return model instanceof ZodEffects || model._def.typeName === ZodFirstPartyTypeKind.ZodEffects;
+export const isZodPipe = (model: ZodType): model is ZodPipe<ZodType> => {
+    return model instanceof ZodPipe || model.def.type === "pipe";
 };
 
-export const isZodPrimitives = (model: ZodTypeAny): boolean => {
-    const type = model._def.typeName as ZodFirstPartyTypeKind;
+export const isZodPrimitives = (model: ZodType): boolean => {
+    const type = model.def.type;
 
     switch (type) {
-        case ZodFirstPartyTypeKind.ZodString:
-        case ZodFirstPartyTypeKind.ZodNumber:
-        case ZodFirstPartyTypeKind.ZodBigInt:
-        case ZodFirstPartyTypeKind.ZodBoolean:
-        case ZodFirstPartyTypeKind.ZodDate:
-        case ZodFirstPartyTypeKind.ZodSymbol:
-        case ZodFirstPartyTypeKind.ZodUndefined:
-        case ZodFirstPartyTypeKind.ZodNull:
-        case ZodFirstPartyTypeKind.ZodVoid:
-        case ZodFirstPartyTypeKind.ZodAny:
-        case ZodFirstPartyTypeKind.ZodUnknown:
-        case ZodFirstPartyTypeKind.ZodNever:
-        case ZodFirstPartyTypeKind.ZodNaN:
+        case "string":
+        case "number":
+        case "bigint":
+        case "boolean":
+        case "date":
+        case "symbol":
+        case "undefined":
+        case "null":
+        case "void":
+        case "any":
+        case "unknown":
+        case "never":
+        case "nan":
             return true;
 
         default:

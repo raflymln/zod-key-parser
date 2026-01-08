@@ -6,14 +6,9 @@
 >
 > ---
 >
-> #### What's New on v.1.5.5?
+> #### What's New on v2.0.0?
 >
-> -   Add support for ZodDefault, ZodPromise, ZodReadonly, and ZodNaN
-> -   Add support for ZodEffects (refine, transform, etc)
-> -   BREAKING CHANGE: If you use customStringParser, the props is now an object instead of single string
-> -   Add more string parser options
-> -   Fix broken Date validation
-> -   Deprecating `prismaKeys`, use `selectKeys` instead
+> -   Migrated to Zod v4: All parsing and schema features now require Zod v4. Older Zod versions are supported on v1.
 
 # Zod Key Parser
 
