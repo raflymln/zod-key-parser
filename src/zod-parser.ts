@@ -107,17 +107,17 @@ export type ZodSchemaKeys =
           key: string;
       };
 
-export const getKeysFromZodSchema = (model: ZodTypeAny, isSelectKey: boolean, parentKey?: string): ZodSchemaKeys => {
+export const getKeysFromZodSchema = (model: ZodType, isSelectKey: boolean, parentKey?: string): ZodSchemaKeys => {
     if (isZodObject(model)) {
         const objKeys: ZodSchemaKeys = {};
 
         Object.entries(model.shape).map(([key, schema]) => {
-            objKeys[key] = getKeysFromZodSchema(schema as ZodTypeAny, isSelectKey, parentKey ? `${parentKey}.${key}` : key);
+            objKeys[key] = getKeysFromZodSchema(schema as ZodType, isSelectKey, parentKey ? `${parentKey}.${key}` : key);
         });
 
         return objKeys;
     } else if (isZodUnion(model)) {
-        const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodTypeAny) => {
+        const result = model.options.reduce((prev: ZodSchemaKeys, curr: ZodType) => {
             const result = getKeysFromZodSchema(curr, isSelectKey, parentKey);
 
             return {
@@ -151,9 +151,9 @@ export const getKeysFromZodSchema = (model: ZodTypeAny, isSelectKey: boolean, pa
     } else if (isZodOptional(model) || isZodNullable(model) || isZodPromise(model)) {
         return getKeysFromZodSchema(model.unwrap(), isSelectKey, parentKey);
     } else if (isZodDefault(model) || isZodReadonly(model)) {
-        return getKeysFromZodSchema(model._def.innerType, isSelectKey, parentKey);
-    } else if (isZodEffects(model)) {
-        return getKeysFromZodSchema(model._def.schema, isSelectKey, parentKey);
+        return getKeysFromZodSchema(model.def.innerType, isSelectKey, parentKey);
+    } else if (isZodPipe(model)) {
+        return getKeysFromZodSchema(model.def.out as ZodType, isSelectKey, parentKey);
     }
 
     if (parentKey) {
@@ -179,10 +179,10 @@ export const convertExtractedZodKeysToSelectKeys = (keys: ZodSchemaKeys) => {
     return selections;
 };
 
-export type ParsedZodSchema<Model extends ZodTypeAny> = {
-    keys: ParsedFormKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
-    prismaKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
-    selectKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<TypeOf<Model>>>>;
+export type ParsedZodSchema<Model extends ZodType> = {
+    keys: ParsedFormKeys<Required<NestedUnionToIntersection<Infer<Model>>>>;
+    prismaKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<Infer<Model>>>>;
+    selectKeys: ParsedSelectKeys<Required<NestedUnionToIntersection<Infer<Model>>>>;
     model: Model;
 };
 
@@ -190,12 +190,12 @@ export const parseZodSchema = <Model extends ZodType>(model: Model): ParsedZodSc
     type InferredModel = Required<NestedUnionToIntersection<Infer<Model>>>;
 
     return {
-        keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<TypeOfModel>,
+        keys: getKeysFromZodSchema(model, false) as ParsedFormKeys<InferredModel>,
         get prismaKeys() {
             console.warn("prismaKeys is deprecated, please use selectKeys instead");
-            return convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<TypeOfModel>;
+            return convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<InferredModel>;
         },
-        selectKeys: convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<TypeOfModel>,
+        selectKeys: convertExtractedZodKeysToSelectKeys(getKeysFromZodSchema(model, true)) as ParsedSelectKeys<InferredModel>,
         model,
     };
 };
