@@ -5,10 +5,6 @@ import { z } from "zod";
 import assert from "assert";
 
 describe("Zod Object Parser", () => {
-    const ext = z.object({
-        a: z.string(),
-    });
-
     const schema = z.object({
         key1: z.boolean(),
         key2: z.string().nullable(),
