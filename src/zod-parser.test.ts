@@ -5,6 +5,10 @@ import { z } from "zod";
 import assert from "assert";
 
 describe("Zod Object Parser", () => {
+    const ext = z.object({
+        a: z.string(),
+    });
+
     const schema = z.object({
         key1: z.boolean(),
         key2: z.string().nullable(),
@@ -63,6 +67,11 @@ describe("Zod Object Parser", () => {
         effects: z.object({
             key1: z.number().transform((val) => val * 2),
             key2: z.string().refine((val) => val.length > 5),
+            key3: z
+                .object({
+                    a: z.string(),
+                })
+                .transform((obj) => ({ a: obj.a.toUpperCase() })),
         }),
     });
 
@@ -128,8 +137,10 @@ describe("Zod Object Parser", () => {
 
         it("Effects should return an object with concatenated key name", () => {
             assert.strictEqual(typeof parsed.keys.effects, "object");
+            assert.strictEqual(typeof parsed.keys.effects.key3, "object");
             assert.strictEqual(parsed.keys.effects.key1, "effects.key1");
             assert.strictEqual(parsed.keys.effects.key2, "effects.key2");
+            assert.strictEqual(parsed.keys.effects.key3.a, "effects.key3.a");
         });
     });
 

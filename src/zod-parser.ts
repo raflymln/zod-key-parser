@@ -153,7 +153,7 @@ export const getKeysFromZodSchema = (model: ZodType, isSelectKey: boolean, paren
     } else if (isZodDefault(model) || isZodReadonly(model)) {
         return getKeysFromZodSchema(model.def.innerType, isSelectKey, parentKey);
     } else if (isZodPipe(model)) {
-        return getKeysFromZodSchema(model.def.out as ZodType, isSelectKey, parentKey);
+        return getKeysFromZodSchema(model.def.in as ZodType, isSelectKey, parentKey);
     }
 
     if (parentKey) {
