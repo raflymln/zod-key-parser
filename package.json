@@ -1,74 +1,74 @@
 {
-  "name": "zod-key-parser",
-  "version": "2.0.0",
-  "description": "Parse zod schema into form keys or select format",
-  "homepage": "https://github.com/raflymln/zod-key-parser#readme",
-  "repository": "https://github.com/raflymln/zod-key-parser",
-  "keywords": [
-    "zod",
-    "prisma",
-    "drizzle",
-    "form",
-    "schema",
-    "parser",
-    "typescript",
-    "server-action",
-    "nextjs",
-    "react"
-  ],
-  "scripts": {
-    "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "build:esm": "tsc -p ./tsconfig.esm.json",
-    "build:types": "tsc -p ./tsconfig.types.json",
-    "build": "pnpm test && pnpm build:cjs && pnpm build:esm && pnpm build:types",
-    "prepublishOnly": "pnpm build",
-    "test": "mocha --reporter spec --require ts-node/register src/**/*.test.ts "
-  },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "prettier": "@raflymln/prettier-config",
-  "eslintConfig": {
-    "extends": "@raflymln/eslint-config",
-    "ignorePatterns": [
-      "dist/*"
-    ]
-  },
-  "author": {
-    "email": "me@raflymaulana.me",
-    "name": "Rafly Maulana",
-    "url": "https://raflymaulana.me"
-  },
-  "contributors": [
-    {
-      "email": "me@onefatir.dev",
-      "name": "Fatir Kurniawan",
-      "url": "https://onefatir.dev"
+    "name": "zod-key-parser",
+    "version": "2.0.1",
+    "description": "Parse zod schema into form keys or select format",
+    "homepage": "https://github.com/raflymln/zod-key-parser#readme",
+    "repository": "https://github.com/raflymln/zod-key-parser",
+    "keywords": [
+        "zod",
+        "prisma",
+        "drizzle",
+        "form",
+        "schema",
+        "parser",
+        "typescript",
+        "server-action",
+        "nextjs",
+        "react"
+    ],
+    "scripts": {
+        "build:cjs": "tsc -p ./tsconfig.cjs.json",
+        "build:esm": "tsc -p ./tsconfig.esm.json",
+        "build:types": "tsc -p ./tsconfig.types.json",
+        "build": "pnpm test && pnpm build:cjs && pnpm build:esm && pnpm build:types",
+        "prepublishOnly": "pnpm build",
+        "test": "mocha --reporter spec --require ts-node/register src/**/*.test.ts "
+    },
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/types/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "prettier": "@raflymln/prettier-config",
+    "eslintConfig": {
+        "extends": "@raflymln/eslint-config",
+        "ignorePatterns": [
+            "dist/*"
+        ]
+    },
+    "author": {
+        "email": "me@raflymaulana.me",
+        "name": "Rafly Maulana",
+        "url": "https://raflymaulana.me"
+    },
+    "contributors": [
+        {
+            "email": "me@onefatir.dev",
+            "name": "Fatir Kurniawan",
+            "url": "https://onefatir.dev"
+        }
+    ],
+    "license": "MIT",
+    "devDependencies": {
+        "@raflymln/eslint-config": "^1.2.1",
+        "@raflymln/prettier-config": "^1.0.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^20.12.12",
+        "@types/validator": "^13.11.10",
+        "@web-std/file": "^3.0.3",
+        "eslint": "^8.57.0",
+        "mocha": "^10.4.0",
+        "prettier": "^3.2.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.5"
+    },
+    "dependencies": {
+        "validator": "^13.15.26",
+        "zod": "^4.3.5"
+    },
+    "peerDependencies": {
+        "validator": ">=13",
+        "zod": "^4.3.5"
     }
-  ],
-  "license": "MIT",
-  "devDependencies": {
-    "@raflymln/eslint-config": "^1.2.1",
-    "@raflymln/prettier-config": "^1.0.0",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20.12.12",
-    "@types/validator": "^13.11.10",
-    "@web-std/file": "^3.0.3",
-    "eslint": "^8.57.0",
-    "mocha": "^10.4.0",
-    "prettier": "^3.2.5",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
-  },
-  "dependencies": {
-    "validator": "^13.15.26",
-    "zod": "^4.3.5"
-  },
-  "peerDependencies": {
-    "validator": ">=13",
-    "zod": "^4.3.5"
-  }
 }

@@ -6,8 +6,9 @@
 >
 > ---
 >
-> #### What's New on v2.0.0?
+> #### What's New on v2.0.1?
 >
+> -   Fix `keys` issue with `ZodPipe`
 > -   Migrated to Zod v4: All parsing and schema features now require Zod v4. Older Zod versions are supported on v1.
 
 # Zod Key Parser
